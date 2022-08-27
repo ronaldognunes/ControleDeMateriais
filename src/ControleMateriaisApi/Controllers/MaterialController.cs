@@ -1,41 +1,50 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ControleMateriaisApi.Dto;
+using ControleMateriaisApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleMateriaisApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class MaterialController : MainController
     {
-        // GET: api/<PoloController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IMaterialService _materialService;
+
+        public MaterialController(IMaterialService materialService)
         {
-            return new string[] { "value1", "value2" };
+            _materialService = materialService;
+        }
+        
+        [HttpGet("retornar-todos-materiais")]
+        public async Task<ResponseDto<IList<MaterialDto>>> ListarTodosMateriaisAsync()
+        {
+            return await _materialService.ListarTodosMateriaisAsync();
         }
 
-        // GET api/<PoloController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("consultar-material-por-id/{id}")]
+        public async Task<ResponseDto<MaterialDto>> ConsultarMaterialPorIdAsync(int id)
         {
-            return "value";
+            return await _materialService.ConsultarMaterialPorIdAsync(id);
+        }      
+
+        [HttpPost("cadastrar-material")]
+        public async Task<ResponseDto<MaterialDto>> CadastrarMaterialAsync([FromBody] MaterialDto material)
+        {
+            return await _materialService.CadastrarMaterialAsync(material);
         }
 
-        // POST api/<PoloController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPut("alterar-material/{id}")]
+        public async Task<ResponseDto<MaterialDto>> AlterarMaterialAsync(int id, [FromBody] MaterialDto material)
         {
+            return await _materialService.AlterarMaterialAsync(id, material);
         }
 
-        // PUT api/<PoloController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpDelete("excluir-material/{id}")]
+        public async Task<ResponseDto<MaterialDto>> ExcluirMaterialAsync(int id)
         {
-        }
-
-        // DELETE api/<PoloController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return await _materialService.DeletarMaterialAsync(id);
         }
     }
 }

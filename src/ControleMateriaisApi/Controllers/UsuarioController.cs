@@ -1,41 +1,58 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ControleMateriaisApi.Dto;
+using ControleMateriaisApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleMateriaisApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class UsuarioController : MainController
     {
-        // GET: api/<PoloController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        
+        private readonly IUsuarioService _usuarioService;
+
+        public UsuarioController(IUsuarioService usuarioService)
         {
-            return new string[] { "value1", "value2" };
+            _usuarioService = usuarioService;
+        }
+        
+        [HttpGet("retornar-todos-usuarios")]
+        public async Task<ResponseDto<IList<UsuarioDto>>> ListarTodosUsuariosAsync()
+        {
+            return await _usuarioService.ListarTodosUsuariosAsync();
+        }
+        
+        [HttpGet("consultar-usuario-por-id/{id}")]
+        public async Task<ResponseDto<UsuarioDto>> ConsultarUsuarioPorIdAsync(int id)
+        {
+            return await _usuarioService.ConsultarUsuariosPorIdAsync(id);
         }
 
-        // GET api/<PoloController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpPost("efetuar-login")]
+        [AllowAnonymous]
+        public async Task<ResponseDto<UsuarioDto>> EfetuarLoginAsync([FromBody] UsuarioDto usuario)
         {
-            return "value";
+            return await _usuarioService.EfetuarLoginAsync(usuario);
         }
 
-        // POST api/<PoloController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("cadastrar-usuario")]
+        [AllowAnonymous]
+        public async Task<ResponseDto<UsuarioDto>> CadastrarUsuarioAsync([FromBody] UsuarioDto usuario)
         {
+            return await _usuarioService.CadastrarUsuarioAsync(usuario);
         }
-
-        // PUT api/<PoloController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        
+        [HttpPut("alterar-usuario/{id}")]
+        public async Task<ResponseDto<UsuarioDto>> AlterarUsuarioAsync(int id, [FromBody] UsuarioDto usuario)
         {
+            return await _usuarioService.AlterarUsuarioAsync(id, usuario);
         }
-
-        // DELETE api/<PoloController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        
+        [HttpDelete("excluir-usuario/{id}")]
+        public async Task<ResponseDto<UsuarioDto>> ExcluirUsuarioAsync([FromBody] UsuarioDto usuario)
         {
+            return await _usuarioService.DeletarUsuarioAsync(usuario);
         }
     }
 }
