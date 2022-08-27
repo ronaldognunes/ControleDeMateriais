@@ -4,13 +4,12 @@ using ControleMateriaisApi.Dto;
 
 namespace ControleMateriaisApi.Mappings
 {
-    public class UsuarioToUsuarioDto:Profile
+    public class PoloToPoloDto:Profile
     {
-        public UsuarioToUsuarioDto()
+        public PoloToPoloDto()
         {
-            CreateMap<Usuario, UsuarioDto>()
+            CreateMap<Polo,PoloDto>()
                 .ReverseMap();
-               
         }
     }
 }
