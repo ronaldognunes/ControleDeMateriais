@@ -1,40 +1,47 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ControleMateriaisApi.Dto;
+using ControleMateriaisApi.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ControleMateriaisApi.Controllers
 {
     [Route("api/[controller]")]
     public class SaidaController : MainController
     {
-        // GET: api/<PoloController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly ISaidaService _service;
+
+        public SaidaController(ISaidaService service)
         {
-            return new string[] { "value1", "value2" };
+            _service = service;
         }
 
-        // GET api/<PoloController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("retornar-todas-saidas")]
+        public async Task<ResponseDto<IList<SaidaDto>>> ListarTodasSaidaAsync()
         {
-            return "value";
+            return await _service.ListarTodasSaidaAsync();
         }
 
-        // POST api/<PoloController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("consultar-saidas-por-id/{id}")]
+        public async Task<ResponseDto<SaidaDto>> ConsultarSaidaPorIdAsync(int id)
         {
+            return await _service.ConsultarSaidaPorIdAsync(id);
         }
 
-        // PUT api/<PoloController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("cadastrar-saida")]
+        public async Task<ResponseDto<SaidaDto>> CadastrarSaidalAsync([FromBody] SaidaDto saida)
         {
+            return await _service.CadastrarSaidalAsync(saida);
         }
 
-        // DELETE api/<PoloController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPut("alterar-saida/{id}")]
+        public async Task<ResponseDto<SaidaDto>> AlterarSaidaAsync(int id, [FromBody] SaidaDto saida)
         {
+            return await _service.AlterarSaidaAsync(id, saida);
+        }
+
+        [HttpDelete("excluir-saida/{id}")]
+        public async Task<ResponseDto<SaidaDto>> DeletarSaidaAsync(int id)
+        {
+            return await _service.DeletarSaidaAsync(id);
         }
     }
 }

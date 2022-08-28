@@ -50,7 +50,10 @@ builder.Services.AddScoped<ISaidaMaterialRepository, SaidaMaterialRepository>();
 builder.Services.AddScoped<IPoloRepository, PoloRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
-builder.Services.AddControllers().AddJsonOptions( opt => opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+builder.Services.AddScoped<IPoloService, PoloService>();
+builder.Services.AddScoped<IEntradaService, EntradaService>();
+builder.Services.AddScoped<ISaidaService, SaidaService>();
+builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

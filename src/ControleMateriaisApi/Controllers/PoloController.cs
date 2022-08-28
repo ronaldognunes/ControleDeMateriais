@@ -1,40 +1,47 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ControleMateriaisApi.Dto;
+using ControleMateriaisApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ControleMateriaisApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class PoloController : MainController
     {
-        // GET: api/<PoloController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IPoloService _service;
+        public PoloController(IPoloService poloService)
         {
-            return new string[] { "value1", "value2" };
+            _service = poloService; 
+        }
+        [HttpGet("retornar-todas-polos")]
+        public async Task<ResponseDto<IList<PoloDto>>> ListarTodosPoloAsync()
+        {
+            return await _service.ListarTodosPoloAsync();
         }
 
-        // GET api/<PoloController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("consultar-polo-por-id/{id}")]
+        public async Task<ResponseDto<PoloDto>> ConsultarPoloPorIdAsync(int id)
         {
-            return "value";
+            return await _service.ConsultarPoloPorIdAsync(id);
         }
 
-        // POST api/<PoloController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("cadastrar-polo")]
+        public async Task<ResponseDto<PoloDto>> CadastrarPololAsync([FromBody] PoloDto saida)
         {
+            return await _service.CadastrarPololAsync(saida);
         }
 
-        // PUT api/<PoloController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("alterar-polo/{id}")]
+        public async Task<ResponseDto<PoloDto>> AlterarPoloAsync(int id, [FromBody] PoloDto saida)
         {
+            return await _service.AlterarPoloAsync(id, saida);
         }
 
-        // DELETE api/<PoloController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("excluir-polo/{id}")]
+        public async Task<ResponseDto<PoloDto>> DeletarPoloAsync(int id)
         {
+            return await _service.DeletarPoloAsync(id);
         }
     }
 }

@@ -76,7 +76,7 @@ namespace ControleMateriaisApi.Services
         {
             var response = new ResponseDto<IList<MaterialDto>>();
             var materiais = await _materialRepository.RecuperarMaterialPorNomeAsync(nome);
-            if (materiais.Any())
+            if (!materiais.Any())
             {
                 response.MensagensDeErros.Add("Material não existe");
                 response.Sucesso = false;

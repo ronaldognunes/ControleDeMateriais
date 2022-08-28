@@ -1,40 +1,47 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ControleMateriaisApi.Dto;
+using ControleMateriaisApi.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ControleMateriaisApi.Controllers
 {
     [Route("api/[controller]")]    
     public class EntradaController : ControllerBase
     {
-        // GET: api/<PoloController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IEntradaService _service;
+
+        public EntradaController(IEntradaService service)
         {
-            return new string[] { "value1", "value2" };
+            _service = service;
         }
 
-        // GET api/<PoloController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("retornar-todos-entrada")]
+        public async Task<ResponseDto<IList<EntradaDto>>> ListarTodasEntradasAsync()
         {
-            return "value";
+            return await _service.ListarTodasEntradasAsync();
         }
 
-        // POST api/<PoloController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("consultar-entrada-por-id/{id}")]
+        public async Task<ResponseDto<EntradaDto>> ConsultarEntradaPorIdAsync(int id)
         {
+            return await _service.ConsultarEntradaPorIdAsync(id);
         }
 
-        // PUT api/<PoloController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("cadastrar-entrada")]
+        public async Task<ResponseDto<EntradaDto>> CadastrarEntradaAsync([FromBody] EntradaDto entrada)
         {
+            return await _service.CadastrarEntradaAsync(entrada);
         }
 
-        // DELETE api/<PoloController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPut("alterar-entrada/{id}")]
+        public async Task<ResponseDto<EntradaDto>> AlterarEntradaAsync(int id, [FromBody] EntradaDto entrada)
         {
+            return await _service.AlterarEntradaAsync(id, entrada);
+        }
+
+        [HttpDelete("excluir-entrada/{id}")]
+        public async Task<ResponseDto<EntradaDto>> DeletarEntradaAsync(int id)
+        {
+            return await _service.DeletarEntradaAsync(id);
         }
     }
 }
