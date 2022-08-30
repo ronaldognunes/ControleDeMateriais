@@ -15,33 +15,63 @@ namespace ControleMateriaisApi.Controllers
             _service = poloService; 
         }
         [HttpGet("retornar-todas-polos")]
-        public async Task<ResponseDto<IList<PoloDto>>> ListarTodosPoloAsync()
-        {
-            return await _service.ListarTodosPoloAsync();
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 400)]
+        public async Task<IActionResult> ListarTodosPoloAsync()
+        {            
+            var retorno = await _service.ListarTodosPoloAsync();
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpGet("consultar-polo-por-id/{id}")]
-        public async Task<ResponseDto<PoloDto>> ConsultarPoloPorIdAsync(int id)
-        {
-            return await _service.ConsultarPoloPorIdAsync(id);
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 400)]
+        public async Task<IActionResult> ConsultarPoloPorIdAsync(int id)
+        {            
+            var retorno = await _service.ConsultarPoloPorIdAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpPost("cadastrar-polo")]
-        public async Task<ResponseDto<PoloDto>> CadastrarPololAsync([FromBody] PoloDto saida)
-        {
-            return await _service.CadastrarPololAsync(saida);
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 201)]
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 400)]
+        public async Task<IActionResult> CadastrarPololAsync([FromBody] PoloDto saida)
+        {            
+            var retorno = await _service.CadastrarPololAsync(saida);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Created("",retorno);
         }
 
         [HttpPut("alterar-polo/{id}")]
-        public async Task<ResponseDto<PoloDto>> AlterarPoloAsync(int id, [FromBody] PoloDto saida)
-        {
-            return await _service.AlterarPoloAsync(id, saida);
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 400)]
+        public async Task<IActionResult> AlterarPoloAsync(int id, [FromBody] PoloDto saida)
+        {            
+            var retorno = await _service.AlterarPoloAsync(id, saida);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpDelete("excluir-polo/{id}")]
-        public async Task<ResponseDto<PoloDto>> DeletarPoloAsync(int id)
-        {
-            return await _service.DeletarPoloAsync(id);
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<PoloDto>), 400)]
+        public async Task<IActionResult> DeletarPoloAsync(int id)
+        {            
+            var retorno = await _service.DeletarPoloAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
     }
 }

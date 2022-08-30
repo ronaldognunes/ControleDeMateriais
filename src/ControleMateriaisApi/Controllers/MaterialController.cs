@@ -1,7 +1,6 @@
 ﻿using ControleMateriaisApi.Dto;
 using ControleMateriaisApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleMateriaisApi.Controllers
@@ -18,33 +17,63 @@ namespace ControleMateriaisApi.Controllers
         }
         
         [HttpGet("retornar-todos-materiais")]
-        public async Task<ResponseDto<IList<MaterialDto>>> ListarTodosMateriaisAsync()
-        {
-            return await _materialService.ListarTodosMateriaisAsync();
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 400)]
+        public async Task<IActionResult> ListarTodosMateriaisAsync()
+        {            
+            var retorno = await _materialService.ListarTodosMateriaisAsync();
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpGet("consultar-material-por-id/{id}")]
-        public async Task<ResponseDto<MaterialDto>> ConsultarMaterialPorIdAsync(int id)
-        {
-            return await _materialService.ConsultarMaterialPorIdAsync(id);
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 400)]
+        public async Task<IActionResult> ConsultarMaterialPorIdAsync(int id)
+        {            
+            var retorno = await _materialService.ConsultarMaterialPorIdAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }      
 
         [HttpPost("cadastrar-material")]
-        public async Task<ResponseDto<MaterialDto>> CadastrarMaterialAsync([FromBody] MaterialDto material)
-        {
-            return await _materialService.CadastrarMaterialAsync(material);
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 201)]
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 400)]
+        public async Task<IActionResult> CadastrarMaterialAsync([FromBody] MaterialDto material)
+        {            
+            var retorno = await _materialService.CadastrarMaterialAsync(material);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Created("", retorno);
         }
 
         [HttpPut("alterar-material/{id}")]
-        public async Task<ResponseDto<MaterialDto>> AlterarMaterialAsync(int id, [FromBody] MaterialDto material)
-        {
-            return await _materialService.AlterarMaterialAsync(id, material);
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 400)]
+        public async Task<IActionResult> AlterarMaterialAsync(int id, [FromBody] MaterialDto material)
+        {            
+            var retorno = await _materialService.AlterarMaterialAsync(id, material);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpDelete("excluir-material/{id}")]
-        public async Task<ResponseDto<MaterialDto>> ExcluirMaterialAsync(int id)
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 400)]
+        public async Task<IActionResult> ExcluirMaterialAsync(int id)
         {
-            return await _materialService.DeletarMaterialAsync(id);
+            var retorno = await _materialService.DeletarMaterialAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
     }
 }

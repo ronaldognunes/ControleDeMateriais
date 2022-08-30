@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ControleMateriaisApi.Controllers
 {
-    [Route("api/[controller]")]
-    [Authorize]
+    [Route("api/[controller]")]    
     public class UsuarioController : MainController
     {
         
@@ -18,41 +17,72 @@ namespace ControleMateriaisApi.Controllers
         }
         
         [HttpGet("retornar-todos-usuarios")]
-        public async Task<ResponseDto<IList<UsuarioDto>>> ListarTodosUsuariosAsync()
+        [ProducesResponseType(typeof(ResponseDto<IList<UsuarioDto>>),200)]
+        [ProducesResponseType(typeof(ResponseDto<IList<UsuarioDto>>), 400)]
+        public async Task<IActionResult> ListarTodosUsuariosAsync()
         {
-            return await _usuarioService.ListarTodosUsuariosAsync();
+            var retorno = await _usuarioService.ListarTodosUsuariosAsync();
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
         
         [HttpGet("consultar-usuario-por-id/{id}")]
-        public async Task<ResponseDto<UsuarioDto>> ConsultarUsuarioPorIdAsync(int id)
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
+        public async Task<IActionResult> ConsultarUsuarioPorIdAsync(int id)
         {
-            return await _usuarioService.ConsultarUsuariosPorIdAsync(id);
+            var retorno = await _usuarioService.ConsultarUsuariosPorIdAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+            return Ok(retorno);
         }
 
         [HttpPost("efetuar-login")]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
         [AllowAnonymous]
-        public async Task<ResponseDto<UsuarioDto>> EfetuarLoginAsync([FromBody] UsuarioDto usuario)
+        public async Task<IActionResult> EfetuarLoginAsync([FromBody] UsuarioDto usuario)
         {
-            return await _usuarioService.EfetuarLoginAsync(usuario);
+            var retorno = await _usuarioService.EfetuarLoginAsync(usuario);            
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+            return Ok(retorno);
         }
 
         [HttpPost("cadastrar-usuario")]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 201)]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
         [AllowAnonymous]
-        public async Task<ResponseDto<UsuarioDto>> CadastrarUsuarioAsync([FromBody] UsuarioDto usuario)
+        public async Task<IActionResult> CadastrarUsuarioAsync([FromBody] UsuarioDto usuario)
         {
-            return await _usuarioService.CadastrarUsuarioAsync(usuario);
+            var retorno = await _usuarioService.CadastrarUsuarioAsync(usuario);             
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+            return Created("",retorno);
         }
         
         [HttpPut("alterar-usuario/{id}")]
-        public async Task<ResponseDto<UsuarioDto>> AlterarUsuarioAsync(int id, [FromBody] UsuarioDto usuario)
-        {
-            return await _usuarioService.AlterarUsuarioAsync(id, usuario);
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
+        public async Task<IActionResult> AlterarUsuarioAsync(int id, [FromBody] UsuarioDto usuario)
+        {            
+            var retorno = await _usuarioService.AlterarUsuarioAsync(id, usuario);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+            return Ok(retorno);
         }
         
         [HttpDelete("excluir-usuario/{id}")]
-        public async Task<ResponseDto<UsuarioDto>> ExcluirUsuarioAsync([FromBody] UsuarioDto usuario)
-        {
-            return await _usuarioService.DeletarUsuarioAsync(usuario);
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
+        public async Task<IActionResult> ExcluirUsuarioAsync([FromBody] UsuarioDto usuario)
+        {            
+            var retorno = await _usuarioService.DeletarUsuarioAsync(usuario);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+            return Ok(retorno);
         }
     }
 }

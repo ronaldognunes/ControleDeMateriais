@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ControleMateriaisApi.Controllers
 {
     [Route("api/[controller]")]    
-    public class EntradaController : ControllerBase
+    public class EntradaController : MainController
     {
         private readonly IEntradaService _service;
 
@@ -15,33 +15,63 @@ namespace ControleMateriaisApi.Controllers
         }
 
         [HttpGet("retornar-todos-entrada")]
-        public async Task<ResponseDto<IList<EntradaDto>>> ListarTodasEntradasAsync()
+        [ProducesResponseType(typeof(ResponseDto<IList<EntradaDto>>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<IList<EntradaDto>>), 400)]
+        public async Task<IActionResult> ListarTodasEntradasAsync()
         {
-            return await _service.ListarTodasEntradasAsync();
+            var retorno = await _service.ListarTodasEntradasAsync();
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpGet("consultar-entrada-por-id/{id}")]
-        public async Task<ResponseDto<EntradaDto>> ConsultarEntradaPorIdAsync(int id)
-        {
-            return await _service.ConsultarEntradaPorIdAsync(id);
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 400)]
+        public async Task<IActionResult> ConsultarEntradaPorIdAsync(int id)
+        {            
+            var retorno = await _service.ConsultarEntradaPorIdAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpPost("cadastrar-entrada")]
-        public async Task<ResponseDto<EntradaDto>> CadastrarEntradaAsync([FromBody] EntradaDto entrada)
-        {
-            return await _service.CadastrarEntradaAsync(entrada);
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 201)]
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 400)]
+        public async Task<IActionResult> CadastrarEntradaAsync([FromBody] EntradaDto entrada)
+        {            
+            var retorno = await _service.CadastrarEntradaAsync(entrada);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Created("", retorno);
         }
 
         [HttpPut("alterar-entrada/{id}")]
-        public async Task<ResponseDto<EntradaDto>> AlterarEntradaAsync(int id, [FromBody] EntradaDto entrada)
-        {
-            return await _service.AlterarEntradaAsync(id, entrada);
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 400)]
+        public async Task<IActionResult> AlterarEntradaAsync(int id, [FromBody] EntradaDto entrada)
+        {            
+            var retorno = await _service.AlterarEntradaAsync(id, entrada);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
 
         [HttpDelete("excluir-entrada/{id}")]
-        public async Task<ResponseDto<EntradaDto>> DeletarEntradaAsync(int id)
-        {
-            return await _service.DeletarEntradaAsync(id);
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<EntradaDto>), 400)]
+        public async Task<IActionResult> DeletarEntradaAsync(int id)
+        {            
+            var retorno = await _service.DeletarEntradaAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+
+            return Ok(retorno);
         }
     }
 }

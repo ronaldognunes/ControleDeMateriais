@@ -27,6 +27,13 @@ namespace ControleMateriaisApi.Services
                 response.Sucesso = false;
                 return response;
             }
+            var mensagensErros = saida.ValidaAlteracao();
+            if (mensagensErros.Any())
+            {
+                response.MensagensDeErros.AddRange(mensagensErros);
+                response.Sucesso = false;
+                return response;
+            }
             var os = _mapper.Map<Saida>(saida);
             response.Sucesso = await _repository.AlterarAsync(os);
             return response;
@@ -35,6 +42,13 @@ namespace ControleMateriaisApi.Services
         public async Task<ResponseDto<SaidaDto>> CadastrarSaidalAsync(SaidaDto saida)
         {
             var response = new ResponseDto<SaidaDto>();
+            var mensagensErros = saida.ValidaCadastro();
+            if (mensagensErros.Any())
+            {
+                response.MensagensDeErros.AddRange(mensagensErros);
+                response.Sucesso = false;
+                return response;
+            }
             var os = _mapper.Map<Saida>(saida);
             response.Sucesso = await _repository.CadastrarAsync(os);
             return response;
