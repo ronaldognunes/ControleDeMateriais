@@ -1,9 +1,5 @@
 using ControleMateriaisApi.Configurations;
-using ControleMateriaisApi.Repository;
 using ControleMateriaisApi.Repository.Context;
-using ControleMateriaisApi.Repository.Interfaces;
-using ControleMateriaisApi.Services;
-using ControleMateriaisApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +9,6 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddDbContext<AplicationContext>(opt => opt.UseSqlite(builder.Configuration.GetConnectionString("db")));
 builder.Services.AddAutoMapper(typeof(Program));
 //jwt
@@ -41,21 +36,10 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
-builder.Services.AddScoped<ISaidaRepository, SaidaRepository>();
-builder.Services.AddScoped<IEntradaRepository, EntradaRepository>();
-builder.Services.AddScoped<IEntradaMaterialRepository, EntradaMaterialRepository>();
-builder.Services.AddScoped<ISaidaMaterialRepository, SaidaMaterialRepository>();
-builder.Services.AddScoped<IPoloRepository, PoloRepository>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IMaterialService, MaterialService>();
-builder.Services.AddScoped<IPoloService, PoloService>();
-builder.Services.AddScoped<IEntradaService, EntradaService>();
-builder.Services.AddScoped<ISaidaService, SaidaService>();
+builder.Services.AddServicosIoC();
 builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
 {
