@@ -2,7 +2,7 @@
 
 namespace ControleMateriaisApi.Repository.Interfaces
 {
-    public interface IEntradaMaterialRepository:IBaseRepository<EntradaMaterial>
+    public interface IOrdemServicoRepository : IBaseRepository<OrdemServico>
     {
     }
 }

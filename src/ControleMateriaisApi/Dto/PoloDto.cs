@@ -1,9 +1,9 @@
-﻿namespace ControleMateriaisApi.Dto
+﻿using ControleMateriaisApi.Domain;
+
+namespace ControleMateriaisApi.Dto
 {
-    public class PoloDto
+    public class PoloDto:Entity
     {
-        public int? Id { get; set; }
-        public DateTime? DataCadastro { get; set; }
         public string? NomePolo { get; set; }
         public string? Logradouro { get; set; }
         public int? Numero { get; set; }

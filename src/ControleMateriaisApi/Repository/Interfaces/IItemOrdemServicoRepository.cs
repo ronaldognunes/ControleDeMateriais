@@ -2,7 +2,7 @@
 
 namespace ControleMateriaisApi.Repository.Interfaces
 {
-    public interface ISaidaMaterialRepository : IBaseRepository<SaidaMaterial>
+    public interface IItemOrdemServicoRepository:IBaseRepository<ItemOrdemServico>
     {
     }
 }

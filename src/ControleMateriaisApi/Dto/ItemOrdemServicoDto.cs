@@ -1,12 +1,13 @@
 ﻿namespace ControleMateriaisApi.Dto
 {
-    public class SaidaMaterialDto
+    public class ItemOrdemServicoDto
     {
         public int? Id { get; set; }
         public DateTime? DataCadastro { get; set; }
-        public int? IdSaida { get; set; }
-        public int? IdMaterial { get; set; }
         public int? Quantidade { get; set; }
+        public int? IdEntrada { get; set; }
+        public int? IdMaterial { get; set; }
+
 
         public IList<string> ValidarCadastroMateriais()
         {
@@ -14,8 +15,8 @@
             if (Quantidade is null)
                 mensagens.Add("Obrigatório informar quantidade.");
 
-            if (IdSaida is null)
-                mensagens.Add("Obrigatório informar Id da Saída.");
+            if (IdEntrada is null)
+                mensagens.Add("Obrigatório informar Id da Entrada.");
 
             if (IdMaterial is null)
                 mensagens.Add("Obrigatório informar Id do Material.");
@@ -27,7 +28,7 @@
         {
             var mensagens = new List<string>();
             if (Id is null)
-                mensagens.Add("Obrigatório informar Id Saída.");
+                mensagens.Add("Obrigatório informar Id Entrada ");
 
             mensagens.AddRange(ValidarCadastroMateriais());
 

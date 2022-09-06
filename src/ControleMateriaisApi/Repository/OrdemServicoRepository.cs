@@ -4,9 +4,9 @@ using ControleMateriaisApi.Repository.Interfaces;
 
 namespace ControleMateriaisApi.Repository
 {
-    public class SaidaRepository : BaseRepository<Saida>, ISaidaRepository
+    public class OrdemServicoRepository : BaseRepository<OrdemServico>,IOrdemServicoRepository
     {
-        public SaidaRepository(AplicationContext context) : base(context)
+        public OrdemServicoRepository(AplicationContext context) : base(context)
         {
         }
     }

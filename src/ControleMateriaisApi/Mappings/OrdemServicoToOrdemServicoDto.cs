@@ -4,11 +4,11 @@ using ControleMateriaisApi.Dto;
 
 namespace ControleMateriaisApi.Mappings
 {
-    public class SaidaMaterialToSaidaMaterialDto:Profile
+    public class OrdemServicoToOrdemServicoDto : Profile
     {
-        public SaidaMaterialToSaidaMaterialDto()
+        public OrdemServicoToOrdemServicoDto()
         {
-            CreateMap<SaidaMaterial,SaidaMaterialDto>()
+            CreateMap<OrdemServico,OrdemServicoDto>()
                 .ReverseMap();
         }
     }

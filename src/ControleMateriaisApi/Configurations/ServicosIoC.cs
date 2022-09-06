@@ -11,16 +11,13 @@ namespace ControleMateriaisApi.Configurations
         {
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IMaterialRepository, MaterialRepository>();
-            services.AddScoped<ISaidaRepository, SaidaRepository>();
-            services.AddScoped<IEntradaRepository, EntradaRepository>();
-            services.AddScoped<IEntradaMaterialRepository, EntradaMaterialRepository>();
-            services.AddScoped<ISaidaMaterialRepository, SaidaMaterialRepository>();
+            services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+            services.AddScoped<IItemOrdemServicoRepository, ItemOrdemServicoRepository>();
             services.AddScoped<IPoloRepository, PoloRepository>();
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IMaterialService, MaterialService>();
             services.AddScoped<IPoloService, PoloService>();
-            services.AddScoped<IEntradaService, EntradaService>();
-            services.AddScoped<ISaidaService, SaidaService>();
+            services.AddScoped<IOrdemServicoService, OrdemServicoService>();
             return services;
         }
     }

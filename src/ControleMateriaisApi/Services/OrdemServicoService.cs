@@ -6,20 +6,19 @@ using ControleMateriaisApi.Services.Interfaces;
 
 namespace ControleMateriaisApi.Services
 {
-    public class SaidaService : ISaidaService
+    public class OrdemServicoService : IOrdemServicoService
     {
-        private readonly ISaidaRepository _repository;
+        private readonly IOrdemServicoRepository _repository;
         private readonly IMapper _mapper;
-
-        public SaidaService(ISaidaRepository repository,
-                            IMapper mapper)
+        public OrdemServicoService(IOrdemServicoRepository repository,
+                              IMapper mapper  )
         {
             _repository = repository;
-            _mapper = mapper;   
+            _mapper = mapper;
         }
-        public async Task<ResponseDto<SaidaDto>> AlterarSaidaAsync(int id, SaidaDto saida)
+        public async Task<ResponseDto<OrdemServicoDto>> AlterarOsAsync(int id, OrdemServicoDto entrada)
         {
-            var response = new ResponseDto<SaidaDto>();
+            var response = new ResponseDto<OrdemServicoDto>();
             var Existe = await _repository.RecuperarPorIdAsync(id);
             if (Existe is null)
             {
@@ -27,36 +26,37 @@ namespace ControleMateriaisApi.Services
                 response.Sucesso = false;
                 return response;
             }
-            var mensagensErros = saida.ValidaAlteracao();
+            var mensagensErros = entrada.ValidaAlteracao();
             if (mensagensErros.Any())
             {
                 response.MensagensDeErros.AddRange(mensagensErros);
                 response.Sucesso = false;
                 return response;
             }
-            var os = _mapper.Map<Saida>(saida);
+
+            var os = _mapper.Map<OrdemServico>(entrada);
             response.Sucesso = await _repository.AlterarAsync(os);
             return response;
         }
 
-        public async Task<ResponseDto<SaidaDto>> CadastrarSaidalAsync(SaidaDto saida)
+        public async Task<ResponseDto<OrdemServicoDto>> CadastrarOsAsync(OrdemServicoDto entrada)
         {
-            var response = new ResponseDto<SaidaDto>();
-            var mensagensErros = saida.ValidaCadastro();
+            var response = new ResponseDto<OrdemServicoDto>();
+            var mensagensErros = entrada.ValidaCadastro();
             if (mensagensErros.Any())
             {
                 response.MensagensDeErros.AddRange(mensagensErros);
                 response.Sucesso = false;
                 return response;
             }
-            var os = _mapper.Map<Saida>(saida);
+            var os = _mapper.Map<OrdemServico>(entrada);
             response.Sucesso = await _repository.CadastrarAsync(os);
             return response;
         }
 
-        public async Task<ResponseDto<SaidaDto>> ConsultarSaidaPorIdAsync(int id)
+        public async Task<ResponseDto<OrdemServicoDto>> ConsultarOsPorIdAsync(int id)
         {
-            var response = new ResponseDto<SaidaDto>();
+            var response = new ResponseDto<OrdemServicoDto>();
             var Existe = await _repository.RecuperarPorIdAsync(id);
             if (Existe is null)
             {
@@ -64,14 +64,14 @@ namespace ControleMateriaisApi.Services
                 response.Sucesso = false;
                 return response;
             }
-            response.result = _mapper.Map<SaidaDto>(Existe);
+            response.result = _mapper.Map<OrdemServicoDto>(Existe);
             response.Sucesso = true;
             return response;
         }
 
-        public async Task<ResponseDto<IList<SaidaDto>>> ConsultarSaidaPorNomesAsync(string nome)
+        public async Task<ResponseDto<IList<OrdemServicoDto>>> ConsultarOsPorNomesAsync(string nome)
         {
-            //var response = new ResponseDto<SaidaDto>();
+            //var response = new ResponseDto<EntradaDto>();
             //var Existe = await _repository.RecuperarPorIdAsync(id);
             //if (Existe is null)
             //{
@@ -79,14 +79,14 @@ namespace ControleMateriaisApi.Services
             //    response.Sucesso = false;
             //    return response;
             //}
-            //var os = _mapper.Map<Saida>(saida);
+            //var os = _mapper.Map<Entrada>(entrada);
             //response.Sucesso = await _repository.AlterarAsync(os);
             return null;
         }
 
-        public async Task<ResponseDto<SaidaDto>> DeletarSaidaAsync(int id)
+        public async Task<ResponseDto<OrdemServicoDto>> DeletarOsAsync(int id)
         {
-            var response = new ResponseDto<SaidaDto>();
+            var response = new ResponseDto<OrdemServicoDto>();
             var Existe = await _repository.RecuperarPorIdAsync(id);
             if (Existe is null)
             {
@@ -94,22 +94,22 @@ namespace ControleMateriaisApi.Services
                 response.Sucesso = false;
                 return response;
             }
-            var os = _mapper.Map<Saida>(Existe);
+            var os = _mapper.Map<OrdemServico>(Existe);
             response.Sucesso = await _repository.DeletarAsync(os);
             return response;
         }
 
-        public async Task<ResponseDto<IList<SaidaDto>>> ListarTodasSaidaAsync()
+        public async Task<ResponseDto<IList<OrdemServicoDto>>> ListarTodasOsAsync()
         {
-            var response = new ResponseDto<IList<SaidaDto>>();
+            var response = new ResponseDto<IList<OrdemServicoDto>>();
             var Existe = await _repository.RecuperarTodosAsync();
             if (!Existe.Any())
             {
-                response.MensagensDeErros.Add("Ordens de serviços não existem");
+                response.MensagensDeErros.Add("Ordem de serviço não existe");
                 response.Sucesso = false;
                 return response;
             }
-            response.result = _mapper.Map<IList<SaidaDto>>(Existe);
+            response.result = _mapper.Map<IList<OrdemServicoDto>>(Existe);
             response.Sucesso = true;
             return response;
         }

@@ -8,5 +8,6 @@ namespace ControleMateriaisApi.Domain
         public string? Email { get; set; }
         public string? Senha { get; set; }
         public TipoUsuario? Perfil { get; set; }
+        public int? CodigoRecuperarSenha { get; set; }
     }
 }

@@ -1,10 +1,12 @@
-﻿namespace ControleMateriaisApi.Dto
+﻿using ControleMateriaisApi.Domain.Enum;
+
+namespace ControleMateriaisApi.Dto
 {
-    public class EntradaDto
+    public class OrdemServicoDto
     {
-        public EntradaDto()
+        public OrdemServicoDto()
         {
-            Materiais = new List<EntradaMaterialDto>();
+            ItensOrdemDeServico = new List<ItemOrdemServicoDto>();
         }
         public int? Id { get; set; }
         public DateTime? DataCadastro { get; set; } 
@@ -14,8 +16,10 @@
         public string? Cidade { get; set; }
         public string? Cep { get; set; }
         public string? Complemento { get; set; }
-        public List<EntradaMaterialDto> Materiais { get; set; }
+        public List<ItemOrdemServicoDto> ItensOrdemDeServico { get; set; }
+        public TipoOrdemServico TipoOrdemDeServico { get; set; }
         public int? IdPolo { get; set; }
+        public int? IdUsuario { get; set; }
 
         public IList<string> ValidaCadastro()
         {
@@ -60,17 +64,17 @@
         public IList<string> validaMateriais(string operacao = "I")
         {
             var mensagens = new List<string>();
-            var temMateriais = !Materiais.Any();
+            var temMateriais = !ItensOrdemDeServico.Any();
             if (temMateriais)
             {
                 if (operacao == "I")
                 { 
-                    foreach(var material in Materiais)                    
+                    foreach(var material in ItensOrdemDeServico)                    
                         mensagens.AddRange(material.ValidarCadastroMateriais());                    
                 }
                 else
                 {
-                    foreach (var material in Materiais)
+                    foreach (var material in ItensOrdemDeServico)
                         mensagens.AddRange(material.ValidarAlteracaoMateriais());
                 }
             }
