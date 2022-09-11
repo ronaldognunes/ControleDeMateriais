@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleMateriaisApi.Migrations
 {
     [DbContext(typeof(AplicationContext))]
-    [Migration("20220911151808_novamigracao")]
+    [Migration("20220911213609_novamigracao")]
     partial class novamigracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
