@@ -15,29 +15,31 @@ namespace ControleMateriaisApi.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ControleMateriaisApi.Domain.ItemOrdemServico", b =>
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_item_ordem_servico");
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_cadastro");
 
                     b.Property<int?>("IdMaterial")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_material");
 
                     b.Property<int?>("IdOs")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_ordem_servico");
 
                     b.Property<int>("Quantidade")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("quantidade");
 
                     b.HasKey("Id");
@@ -53,19 +55,19 @@ namespace ControleMateriaisApi.Migrations
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_material");
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_cadastro");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("nome");
 
                     b.Property<string>("UnidadeMedida")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("unidade_medida");
 
                     b.HasKey("Id");
@@ -81,45 +83,45 @@ namespace ControleMateriaisApi.Migrations
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_os");
 
                     b.Property<string>("Bairro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("bairro");
 
                     b.Property<string>("Cep")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("cep");
 
                     b.Property<string>("Cidade")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("cidade");
 
                     b.Property<string>("Complemento")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("complemento");
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_cadastro");
 
                     b.Property<int>("IdPolo")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_polo");
 
                     b.Property<int?>("IdUsuario")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Logradouro")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Numero")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("numero");
 
                     b.Property<int>("TipoOrdemDeServico")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("tipo_ordem_servico");
 
                     b.HasKey("Id");
@@ -135,39 +137,39 @@ namespace ControleMateriaisApi.Migrations
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_polo");
 
                     b.Property<string>("Bairro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("bairro");
 
                     b.Property<string>("Cep")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("cep");
 
                     b.Property<string>("Cidade")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("cidade");
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_cadastro");
 
                     b.Property<string>("Logradouro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("longtext")
                         .HasColumnName("logradouro");
 
                     b.Property<string>("NomePolo")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("nome_polo");
 
                     b.Property<int>("Numero")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("numero");
 
                     b.Property<string>("Uf")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -180,31 +182,31 @@ namespace ControleMateriaisApi.Migrations
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("id_usuario");
 
                     b.Property<int?>("CodigoRecuperarSenha")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("codigo_senha");
 
                     b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_cadastro");
 
                     b.Property<string>("Email")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("email");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("nome");
 
                     b.Property<int?>("Perfil")
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("int")
                         .HasColumnName("perfil");
 
                     b.Property<string>("Senha")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("senha");
 
                     b.HasKey("Id");

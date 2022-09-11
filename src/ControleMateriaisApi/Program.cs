@@ -6,11 +6,16 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AplicationContext>(opt => opt.UseSqlite(builder.Configuration.GetConnectionString("db")));
+// contexto do banco de dados.
+var versionContext = new MySqlServerVersion(new Version(8, 0, 27));
+var conectionstring = builder.Configuration.GetConnectionString("db");
+builder.Services.AddDbContext<AplicationContext>(opt => opt.UseMySql(conectionstring, versionContext));
 builder.Services.AddAutoMapper(typeof(Program));
+
 //jwt
 var appSettingsSection = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettingsSection);

@@ -176,11 +176,12 @@ namespace ControleMateriaisApi.Services
             if (usuario is null)
             {
                 retorno.Sucesso = false;
-                retorno.MensagensDeErros.Add("Obrigatório informar e-mail");
+                retorno.MensagensDeErros.Add("e-mail não existe");
                 return retorno;
             }
             usuario.CodigoRecuperarSenha = new Random().Next(100000, 9999999);
             await _emailService.EnviarEmail(usuario.Email, "Recuperar Senha", GerarMensagem(usuario?.CodigoRecuperarSenha));
+
             
             retorno.Sucesso = await _usuarioRepository.AlterarAsync(usuario);
             return retorno;
@@ -233,6 +234,7 @@ namespace ControleMateriaisApi.Services
             }            
 
             usuario.Senha = dados.SenhaNova;
+            usuario.CodigoRecuperarSenha = null;
             retorno.Sucesso = await _usuarioRepository.AlterarAsync(usuario);
             return retorno;
         }

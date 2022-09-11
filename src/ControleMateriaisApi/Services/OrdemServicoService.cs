@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using ClosedXML.Excel;
 using ControleMateriaisApi.Domain;
+using ControleMateriaisApi.Domain.Enum;
 using ControleMateriaisApi.Dto;
 using ControleMateriaisApi.Repository.Interfaces;
 using ControleMateriaisApi.Services.Interfaces;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace ControleMateriaisApi.Services
 {
@@ -175,6 +178,53 @@ namespace ControleMateriaisApi.Services
             response.result = _mapper.Map<IList<OrdemServicoDto>>(Existe);
             response.Sucesso = true;
             return response;
+        }
+
+        public async Task<ResponseDto<ArquivoDto>> GerarRelatorioAsync(TipoOrdemServico? tipoOrdem, DateTime? dataInicio, DateTime? dataFim)
+        {
+            var retorno = new ResponseDto<ArquivoDto>() { result = new ArquivoDto()};
+            var dadosRelatorio = await _repository.GerarRelatorio(tipoOrdem, dataInicio, dataFim);
+            if (!dadosRelatorio.Any())
+            {
+                retorno.MensagensDeErros.Add("Nenhum registro encontrado para os filtro informados");
+                retorno.Sucesso = false;
+                return retorno;
+            }
+            var caminho = Directory.GetCurrentDirectory() + $"\\RelatoriosGerados\\";
+            var nomeArquivo = $"Planilha_controle_material_{DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss")}.xlsx";
+            var caminhoCompleto = caminho + nomeArquivo;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Controle de Materiais");
+                worksheet.Cell("A1").Value = "Número da OS";
+                worksheet.Cell("B1").Value = "Data Cadastro";
+                worksheet.Cell("C1").Value = "Código Material";
+                worksheet.Cell("D1").Value = "Nome Material";
+                worksheet.Cell("E1").Value = "Quantidade";
+                worksheet.Cell("F1").Value = "Unidade de Medida";
+                worksheet.Cell("G1").Value = "Tipo Ordem de Serviço";
+
+                for(var i = 0; i < dadosRelatorio.Count(); i++)
+                {
+                    var os = dadosRelatorio.ToList()[i];
+                    worksheet.Cell($"A{i + 2}").Value = os.IdOs;
+                    worksheet.Cell($"B{i + 2}").Value = os.DataCadastro;
+                    worksheet.Cell($"C{i + 2}").Value = os.IdMaterial;
+                    worksheet.Cell($"D{i + 2}").Value = os.NomeMaterial;
+                    worksheet.Cell($"E{i + 2}").Value = os.Quantidade;
+                    worksheet.Cell($"F{i + 2}").Value = os.UnidadeMedida;
+                    worksheet.Cell($"G{i + 2}").Value = os.TipoOrdemServico;
+                }
+
+                workbook.SaveAs(caminhoCompleto);
+            }
+
+            byte[] imagem = System.IO.File.ReadAllBytes(caminhoCompleto);
+            string imagebase64 = System.Convert.ToBase64String(imagem);
+            retorno.result.NomeArquivo = nomeArquivo;
+            retorno.result.Base64 = imagebase64;
+            return retorno;
         }
 
         public Task<ResponseDto<IList<ItemOrdemServicoDto>>> ListarTodosItensOsAsync(int idOs)

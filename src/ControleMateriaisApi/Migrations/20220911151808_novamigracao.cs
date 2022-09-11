@@ -1,83 +1,106 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ControleMateriaisApi.Migrations
 {
-    public partial class teste01 : Migration
+    public partial class novamigracao : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "materiais",
                 columns: table => new
                 {
-                    id_material = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    nome = table.Column<string>(type: "TEXT", nullable: true),
-                    unidade_medida = table.Column<string>(type: "TEXT", nullable: true),
-                    data_cadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id_material = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    nome = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    unidade_medida = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    data_cadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_materiais", x => x.id_material);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "polos",
                 columns: table => new
                 {
-                    id_polo = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    nome_polo = table.Column<string>(type: "TEXT", nullable: true),
-                    logradouro = table.Column<string>(type: "TEXT", nullable: true),
-                    numero = table.Column<int>(type: "INTEGER", nullable: false),
-                    cep = table.Column<string>(type: "TEXT", nullable: true),
-                    bairro = table.Column<string>(type: "TEXT", nullable: true),
-                    cidade = table.Column<string>(type: "TEXT", nullable: true),
-                    Uf = table.Column<string>(type: "TEXT", nullable: true),
-                    data_cadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id_polo = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    nome_polo = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    logradouro = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    numero = table.Column<int>(type: "int", nullable: false),
+                    cep = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    bairro = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    cidade = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Uf = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    data_cadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_polos", x => x.id_polo);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "usuarios",
                 columns: table => new
                 {
-                    id_usuario = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    nome = table.Column<string>(type: "TEXT", nullable: true),
-                    email = table.Column<string>(type: "TEXT", nullable: true),
-                    senha = table.Column<string>(type: "TEXT", nullable: true),
-                    perfil = table.Column<int>(type: "INTEGER", nullable: true),
-                    codigo_senha = table.Column<int>(type: "INTEGER", nullable: true),
-                    data_cadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id_usuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    nome = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    email = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    senha = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    perfil = table.Column<int>(type: "int", nullable: true),
+                    codigo_senha = table.Column<int>(type: "int", nullable: true),
+                    data_cadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_usuarios", x => x.id_usuario);
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "ordens_servico",
                 columns: table => new
                 {
-                    id_os = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Logradouro = table.Column<string>(type: "TEXT", nullable: true),
-                    numero = table.Column<int>(type: "INTEGER", nullable: false),
-                    bairro = table.Column<string>(type: "TEXT", nullable: true),
-                    cidade = table.Column<string>(type: "TEXT", nullable: true),
-                    cep = table.Column<string>(type: "TEXT", nullable: true),
-                    complemento = table.Column<string>(type: "TEXT", nullable: true),
-                    id_polo = table.Column<int>(type: "INTEGER", nullable: false),
-                    tipo_ordem_servico = table.Column<int>(type: "INTEGER", nullable: false),
-                    IdUsuario = table.Column<int>(type: "INTEGER", nullable: true),
-                    data_cadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id_os = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Logradouro = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    numero = table.Column<int>(type: "int", nullable: false),
+                    bairro = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    cidade = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    cep = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    complemento = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    id_polo = table.Column<int>(type: "int", nullable: false),
+                    tipo_ordem_servico = table.Column<int>(type: "int", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: true),
+                    data_cadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,18 +116,19 @@ namespace ControleMateriaisApi.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "usuarios",
                         principalColumn: "id_usuario");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "item_ordem_servico",
                 columns: table => new
                 {
-                    id_item_ordem_servico = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    quantidade = table.Column<int>(type: "INTEGER", nullable: false),
-                    id_ordem_servico = table.Column<int>(type: "INTEGER", nullable: true),
-                    id_material = table.Column<int>(type: "INTEGER", nullable: true),
-                    data_cadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id_item_ordem_servico = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    quantidade = table.Column<int>(type: "int", nullable: false),
+                    id_ordem_servico = table.Column<int>(type: "int", nullable: true),
+                    id_material = table.Column<int>(type: "int", nullable: true),
+                    data_cadastro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,7 +143,8 @@ namespace ControleMateriaisApi.Migrations
                         column: x => x.id_ordem_servico,
                         principalTable: "ordens_servico",
                         principalColumn: "id_os");
-                });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "IX_item_ordem_servico_id_material",

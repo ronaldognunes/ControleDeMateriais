@@ -1,4 +1,5 @@
-﻿using ControleMateriaisApi.Dto;
+﻿using ControleMateriaisApi.Domain.Enum;
+using ControleMateriaisApi.Dto;
 using ControleMateriaisApi.Repository.Interfaces;
 using ControleMateriaisApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -18,16 +19,16 @@ namespace ControleMateriaisApi.Controllers
             _service = service;
             _repository = repository;   
         }
-        [AllowAnonymous]
+       
         [HttpGet("relatorio-os")]
-        [ProducesResponseType(typeof(ResponseDto<IList<OrdemServicoDto>>), 200)]
-        [ProducesResponseType(typeof(ResponseDto<IList<OrdemServicoDto>>), 400)]
-        public async Task<IActionResult> GerarRelatorioAsync()
+        [ProducesResponseType(typeof(ResponseDto<ArquivoDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<ArquivoDto>), 400)]
+        public async Task<IActionResult> GerarRelatorioAsync(TipoOrdemServico? tipoOrdem, DateTime? dataInicio, DateTime? dataFim)
         {
-            var teste = _repository.GerarRelatorio();
-            var retorno = await _service.ListarTodasOsAsync();
+            var retorno = await _service.GerarRelatorioAsync(tipoOrdem, dataInicio,dataFim);
             if (!retorno.Sucesso)
                 return BadRequest(retorno);
+
 
             return Ok(retorno);
         }

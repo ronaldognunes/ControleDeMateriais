@@ -1,4 +1,5 @@
-﻿using ControleMateriaisApi.Dto;
+﻿using ControleMateriaisApi.Domain.Enum;
+using ControleMateriaisApi.Dto;
 
 namespace ControleMateriaisApi.Services.Interfaces
 {
@@ -14,6 +15,7 @@ namespace ControleMateriaisApi.Services.Interfaces
         Task<ResponseDto<ItemOrdemServicoDto>> CadastrarItemOsAsync(CadastroItemOrdemServicoDto item);
         Task<ResponseDto<ItemOrdemServicoDto>> AlterarItemOsAsync(ItemOrdemServicoDto item);
         Task<ResponseDto<ItemOrdemServicoDto>> ApagarItemOsAsync(int id);
+        Task<ResponseDto<ArquivoDto>> GerarRelatorioAsync(TipoOrdemServico? tipoOrdem, DateTime? dataInicio, DateTime? dataFim);
 
     }
 }

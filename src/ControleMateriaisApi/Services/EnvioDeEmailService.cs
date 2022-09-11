@@ -4,6 +4,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using MimeKit.Text;
 
 namespace ControleMateriaisApi.Services
 {
@@ -26,7 +27,7 @@ namespace ControleMateriaisApi.Services
                 message.To.Add(new MailboxAddress("cliente",destinatario));
                 message.Subject = "Resetar Senha";
 
-                message.Body = new TextPart("plain")
+                message.Body = new TextPart(TextFormat.Html)
                 {
                     Text = menssagem
                 };
