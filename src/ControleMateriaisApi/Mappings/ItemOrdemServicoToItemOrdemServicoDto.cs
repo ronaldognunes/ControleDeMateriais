@@ -12,4 +12,13 @@ namespace ControleMateriaisApi.Mappings
                 .ReverseMap();
         }
     }
+
+    public class ItemOrdemServicoToCadastroItemOrdemServicoDto : Profile
+    {
+        public ItemOrdemServicoToCadastroItemOrdemServicoDto()
+        {
+            CreateMap<ItemOrdemServico, CadastroItemOrdemServicoDto>()
+                .ReverseMap();
+        }
+    }
 }

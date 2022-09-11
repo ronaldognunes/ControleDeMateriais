@@ -21,6 +21,15 @@ namespace ControleMateriaisApi.Repository
             return retorno;
         }
 
+        public async Task<Usuario> RecuperarEmailAsync(string email)
+        {
+            var retorno = await _context
+                .Usuarios
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefaultAsync(x => x.Email == email);
+            return retorno;
+        }
+
         public async Task<IList<Usuario>> RecuperarUsuariosPorNomeAsync(string nome)
         {
             var retorno = await  _context
@@ -28,6 +37,15 @@ namespace ControleMateriaisApi.Repository
                 .AsNoTrackingWithIdentityResolution()
                 .Where(x => x.Nome == nome)
                 .ToListAsync();
+            return retorno;
+        }
+
+        public async Task<Usuario> RecuperarUsuariosPorCodigoAsync(int codigo, string email)
+        {
+            var retorno = await _context
+                .Usuarios
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefaultAsync(x => x.CodigoRecuperarSenha == codigo && x.Email == email);
             return retorno;
         }
 

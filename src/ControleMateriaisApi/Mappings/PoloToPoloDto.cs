@@ -12,4 +12,13 @@ namespace ControleMateriaisApi.Mappings
                 .ReverseMap();
         }
     }
+    //
+    public class PoloToCadastroPoloDto : Profile
+    {
+        public PoloToCadastroPoloDto()
+        {
+            CreateMap<Polo, CadastroPoloDto>()
+                .ReverseMap();
+        }
+    }
 }

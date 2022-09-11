@@ -43,7 +43,7 @@ namespace ControleMateriaisApi.Controllers
         [HttpPost("cadastrar-material")]
         [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 201)]
         [ProducesResponseType(typeof(ResponseDto<MaterialDto>), 400)]
-        public async Task<IActionResult> CadastrarMaterialAsync([FromBody] MaterialDto material)
+        public async Task<IActionResult> CadastrarMaterialAsync([FromBody] CadastroMaterialDto material)
         {            
             var retorno = await _materialService.CadastrarMaterialAsync(material);
             if (!retorno.Sucesso)

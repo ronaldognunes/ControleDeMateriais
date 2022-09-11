@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleMateriaisApi.Migrations
 {
     [DbContext(typeof(AplicationContext))]
-    [Migration("20220906010311_teste")]
-    partial class teste
+    [Migration("20220911010755_teste01")]
+    partial class teste01
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,7 +84,7 @@ namespace ControleMateriaisApi.Migrations
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_usuario");
+                        .HasColumnName("id_os");
 
                     b.Property<string>("Bairro")
                         .HasColumnType("TEXT")

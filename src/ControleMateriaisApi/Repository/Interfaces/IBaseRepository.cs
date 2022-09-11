@@ -7,6 +7,7 @@ namespace ControleMateriaisApi.Repository.Interfaces
         Task<T> RecuperarPorIdAsync(int id);
         Task<List<T>> RecuperarTodosAsync();
         Task<bool> CadastrarAsync(T entity);
+        Task<bool> CadastrarVariosAsync(List<T> entity);
         Task<bool> DeletarAsync(T entity);
         Task<bool> AlterarAsync(T entity);   
 

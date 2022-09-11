@@ -2,26 +2,19 @@
 
 namespace ControleMateriaisApi.Dto
 {
-    public class UsuarioDto
+    public class UsuarioCadastroDto
     {
-        public int? Id { get; set; }
         public string? Nome { get; set; }
         public string? Email { get; set; }
         public string? Senha { get; set; }
         public string? ConfirmacaoSenha { get; set; }
         public TipoUsuario? Perfil { get; set; }
-        public string? Token { get; set; }
-        public DateTime? DataCadastro { get; set; }
 
         public bool VerificaSeSenhaSaoIguais()
         {
             return Senha == ConfirmacaoSenha;
         }
 
-        public bool VerificaIdEhVazio()
-        {
-            return Id == null ;
-        }
 
         private bool VerificaNomeEhVazio()
         {
@@ -43,37 +36,9 @@ namespace ControleMateriaisApi.Dto
             return string.IsNullOrWhiteSpace(ConfirmacaoSenha);
         }
 
-     
-
-        public IList<string> ValidaLogin()
+        public IList<string> ValidaCadastroUsuario()
         {
             var mensagensErros = new List<string>();
-            if (VerificaEmailEhVazio())
-                mensagensErros.Add("Necessário Informar o Email");
-
-            if (VerificaSenhaEhVazio())
-                mensagensErros.Add("Necessário Informar o Senha");
-
-            return mensagensErros;
-
-        }
-
-        public IList<string> ValidaDeletarUsuario()
-        {
-            var mensagensErros = new List<string>();
-            if (VerificaIdEhVazio())
-                mensagensErros.Add("Necessário Informar o Id");
-
-            return mensagensErros;
-
-        }
-
-        public IList<string> ValidaAlterarUsuario()
-        {
-            var mensagensErros = new List<string>();
-            if (VerificaIdEhVazio())
-                mensagensErros.Add("Necessário Informar o ID");
-
             if (VerificaEmailEhVazio())
                 mensagensErros.Add("Necessário Informar o Email");
 
@@ -81,7 +46,7 @@ namespace ControleMateriaisApi.Dto
                 mensagensErros.Add("Necessário Informar o Senha");
 
             if (VerificaConfirmacaoSenhaEhVazio())
-                mensagensErros.Add("Necessário Informar o Confirmação de Senha");
+                mensagensErros.Add("Necessário Informar o Confirmação de senha");
 
             if (VerificaNomeEhVazio())
                 mensagensErros.Add("Necessário Informar o Nome");
@@ -92,6 +57,5 @@ namespace ControleMateriaisApi.Dto
             return mensagensErros;
 
         }
-
     }
 }

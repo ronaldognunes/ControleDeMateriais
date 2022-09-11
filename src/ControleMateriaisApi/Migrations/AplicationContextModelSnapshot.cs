@@ -82,7 +82,7 @@ namespace ControleMateriaisApi.Migrations
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_usuario");
+                        .HasColumnName("id_os");
 
                     b.Property<string>("Bairro")
                         .HasColumnType("TEXT")

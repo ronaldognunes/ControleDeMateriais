@@ -12,4 +12,13 @@ namespace ControleMateriaisApi.Mappings
                 .ReverseMap();
         }
     }
+
+    public class MaterialToCadastroMaterialDto : Profile
+    {
+        public MaterialToCadastroMaterialDto()
+        {
+            CreateMap<Material, CadastroMaterialDto>()
+                .ReverseMap();
+        }
+    }
 }

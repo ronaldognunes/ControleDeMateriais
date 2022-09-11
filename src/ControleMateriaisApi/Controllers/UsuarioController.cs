@@ -43,7 +43,7 @@ namespace ControleMateriaisApi.Controllers
         [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
         [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
         [AllowAnonymous]
-        public async Task<IActionResult> EfetuarLoginAsync([FromBody] UsuarioDto usuario)
+        public async Task<IActionResult> EfetuarLoginAsync([FromBody] LoginDto usuario)
         {
             var retorno = await _usuarioService.EfetuarLoginAsync(usuario);            
             if (!retorno.Sucesso)
@@ -55,7 +55,7 @@ namespace ControleMateriaisApi.Controllers
         [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 201)]
         [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
         [AllowAnonymous]
-        public async Task<IActionResult> CadastrarUsuarioAsync([FromBody] UsuarioDto usuario)
+        public async Task<IActionResult> CadastrarUsuarioAsync([FromBody] UsuarioCadastroDto usuario)
         {
             var retorno = await _usuarioService.CadastrarUsuarioAsync(usuario);             
             if (!retorno.Sucesso)
@@ -77,9 +77,33 @@ namespace ControleMateriaisApi.Controllers
         [HttpDelete("excluir-usuario/{id}")]
         [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
         [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
-        public async Task<IActionResult> ExcluirUsuarioAsync([FromBody] UsuarioDto usuario)
+        public async Task<IActionResult> ExcluirUsuarioAsync([FromRoute]int id)
         {            
-            var retorno = await _usuarioService.DeletarUsuarioAsync(usuario);
+            var retorno = await _usuarioService.DeletarUsuarioAsync(id);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+            return Ok(retorno);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("enviar-email-resetar-senha/{email}")]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
+        public async Task<IActionResult> EnviarEmailResetarSenhaAsync([FromRoute] string email)
+        {
+            var retorno = await _usuarioService.GerarCodigoParaResetarSenhaAsync(email);
+            if (!retorno.Sucesso)
+                return BadRequest(retorno);
+            return Ok(retorno);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("resetar-senha")]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 200)]
+        [ProducesResponseType(typeof(ResponseDto<UsuarioDto>), 400)]
+        public async Task<IActionResult> ResetarSenhaAsync(ResetarSenhaDto dados)
+        {
+            var retorno = await _usuarioService.ResetarSenhaAsync(dados);
             if (!retorno.Sucesso)
                 return BadRequest(retorno);
             return Ok(retorno);

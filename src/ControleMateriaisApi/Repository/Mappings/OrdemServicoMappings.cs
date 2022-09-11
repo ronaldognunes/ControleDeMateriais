@@ -39,7 +39,7 @@ namespace ControleMateriaisApi.Repository.Mappings
                 .HasColumnName("id_ordem_servico");
 
             builder.Property(x => x.Id)
-                .HasColumnName("id_usuario");
+                .HasColumnName("id_os");
 
             /* 1 para muitos polos*/
             builder.HasOne(x => x.Polo)

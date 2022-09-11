@@ -42,7 +42,7 @@ namespace ControleMateriaisApi.Services
 
         }
 
-        public async Task<ResponseDto<MaterialDto>> CadastrarMaterialAsync(MaterialDto material)
+        public async Task<ResponseDto<MaterialDto>> CadastrarMaterialAsync(CadastroMaterialDto material)
         {
             var response = new ResponseDto<MaterialDto>();
             if (string.IsNullOrWhiteSpace(material.Nome))

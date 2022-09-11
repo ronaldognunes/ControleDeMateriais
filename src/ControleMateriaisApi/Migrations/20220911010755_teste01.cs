@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ControleMateriaisApi.Migrations
 {
-    public partial class teste : Migration
+    public partial class teste01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,7 +66,7 @@ namespace ControleMateriaisApi.Migrations
                 name: "ordens_servico",
                 columns: table => new
                 {
-                    id_usuario = table.Column<int>(type: "INTEGER", nullable: false)
+                    id_os = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Logradouro = table.Column<string>(type: "TEXT", nullable: true),
                     numero = table.Column<int>(type: "INTEGER", nullable: false),
@@ -81,7 +81,7 @@ namespace ControleMateriaisApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ordens_servico", x => x.id_usuario);
+                    table.PrimaryKey("PK_ordens_servico", x => x.id_os);
                     table.ForeignKey(
                         name: "FK_ordens_servico_polos_id_polo",
                         column: x => x.id_polo,
@@ -118,7 +118,7 @@ namespace ControleMateriaisApi.Migrations
                         name: "FK_item_ordem_servico_ordens_servico_id_ordem_servico",
                         column: x => x.id_ordem_servico,
                         principalTable: "ordens_servico",
-                        principalColumn: "id_usuario");
+                        principalColumn: "id_os");
                 });
 
             migrationBuilder.CreateIndex(

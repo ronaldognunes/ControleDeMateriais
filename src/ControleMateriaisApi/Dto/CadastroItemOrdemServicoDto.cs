@@ -1,9 +1,7 @@
 ﻿namespace ControleMateriaisApi.Dto
 {
-    public class ItemOrdemServicoDto
+    public class CadastroItemOrdemServicoDto
     {
-        public int Id { get; set; }
-        public DateTime? DataCadastro { get; set; }
         public int? Quantidade { get; set; }
         public int? IdEntrada { get; set; }
         public int? IdMaterial { get; set; }
@@ -27,15 +25,5 @@
 
             return mensagens;
         }
-
-        public IList<string> ValidarAlteracaoMateriais()
-        {
-            var mensagens = new List<string>();            
-            mensagens.AddRange(ValidarCadastroMateriais());
-
-            return mensagens;
-        }
-
-
     }
 }

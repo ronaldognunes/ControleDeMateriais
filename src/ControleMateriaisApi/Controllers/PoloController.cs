@@ -41,7 +41,7 @@ namespace ControleMateriaisApi.Controllers
         [HttpPost("cadastrar-polo")]
         [ProducesResponseType(typeof(ResponseDto<PoloDto>), 201)]
         [ProducesResponseType(typeof(ResponseDto<PoloDto>), 400)]
-        public async Task<IActionResult> CadastrarPololAsync([FromBody] PoloDto saida)
+        public async Task<IActionResult> CadastrarPololAsync([FromBody] CadastroPoloDto saida)
         {            
             var retorno = await _service.CadastrarPololAsync(saida);
             if (!retorno.Sucesso)

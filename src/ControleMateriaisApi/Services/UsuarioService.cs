@@ -16,14 +16,17 @@ namespace ControleMateriaisApi.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private readonly IEnvioDeEmailService _emailService;
 
         public UsuarioService(IUsuarioRepository usuarioRepository
                              , IMapper mapper
-                             , IOptions<AppSettings> opt)
+                             , IOptions<AppSettings> opt
+                             , IEnvioDeEmailService emailService)
         {
             _usuarioRepository = usuarioRepository;
             _mapper = mapper;
             _appSettings = opt.Value;
+            _emailService = emailService;
         }
 
         public async Task<ResponseDto<UsuarioDto>> AlterarUsuarioAsync(int id, UsuarioDto usuario)
@@ -46,7 +49,7 @@ namespace ControleMateriaisApi.Services
             return response;
         }
 
-        public async Task<ResponseDto<UsuarioDto>> CadastrarUsuarioAsync(UsuarioDto usuario)
+        public async Task<ResponseDto<UsuarioDto>> CadastrarUsuarioAsync(UsuarioCadastroDto usuario)
         {
             var response = new ResponseDto<UsuarioDto>();
             var mensagensDeErros = usuario.ValidaCadastroUsuario();
@@ -85,27 +88,33 @@ namespace ControleMateriaisApi.Services
             return retorno;
         }
 
-        public async Task<ResponseDto<UsuarioDto>> DeletarUsuarioAsync(UsuarioDto usuario)
+        public async Task<ResponseDto<UsuarioDto>> DeletarUsuarioAsync(int id)
         {
             var retorno = new ResponseDto<UsuarioDto>();
-            var mensagensErros = usuario.ValidaDeletarUsuario();
-            if (mensagensErros.Any())
+            var usuario = await _usuarioRepository.RecuperarPorIdAsync(id);
+            if (usuario is null)
             {
-                retorno.MensagensDeErros.AddRange(mensagensErros);
+                retorno.MensagensDeErros.Add("Usuario não encontrado.");
                 return retorno;
-            }
-            var usuarioEntity = _mapper.Map<Usuario>(usuario);
-            retorno.Sucesso = await _usuarioRepository.DeletarAsync(usuarioEntity);
+            }            
+            retorno.Sucesso = await _usuarioRepository.DeletarAsync(usuario);
             return retorno;
         }
 
-        public async Task<ResponseDto<UsuarioDto>> EfetuarLoginAsync(UsuarioDto usuario)
+        public async Task<ResponseDto<UsuarioDto>> EfetuarLoginAsync(LoginDto usuario)
         {
             var response = new ResponseDto<UsuarioDto>();
-            var mensagensErros = usuario.ValidaLogin();
-            if (mensagensErros.Any())
+            
+            if (string.IsNullOrEmpty(usuario.Email))
             {
-                response.MensagensDeErros.AddRange(mensagensErros);
+                response.MensagensDeErros.Add("Obrigatório informar E-mail");
+                response.Sucesso = false;
+                return response;
+            }
+
+            if (string.IsNullOrEmpty(usuario.Senha))
+            {
+                response.MensagensDeErros.Add("Obrigatório informar Senha.");
                 response.Sucesso = false;
                 return response;
             }
@@ -150,6 +159,82 @@ namespace ControleMateriaisApi.Services
             });
             var encodedToken = tokenHandler.WriteToken(token);
             return encodedToken;
+        }
+
+        public async Task<ResponseDto<UsuarioDto>> GerarCodigoParaResetarSenhaAsync(string email)
+        {
+            var retorno = new ResponseDto<UsuarioDto>();
+            
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                retorno.Sucesso=false;
+                retorno.MensagensDeErros.Add("Obrigatório informar e-mail");
+                return retorno;
+            }
+
+            var usuario = await _usuarioRepository.RecuperarEmailAsync(email);
+            if (usuario is null)
+            {
+                retorno.Sucesso = false;
+                retorno.MensagensDeErros.Add("Obrigatório informar e-mail");
+                return retorno;
+            }
+            usuario.CodigoRecuperarSenha = new Random().Next(100000, 9999999);
+            await _emailService.EnviarEmail(usuario.Email, "Recuperar Senha", GerarMensagem(usuario?.CodigoRecuperarSenha));
+            
+            retorno.Sucesso = await _usuarioRepository.AlterarAsync(usuario);
+            return retorno;
+        }
+
+        private string GerarMensagem(int? valor)
+        {            
+            var mensagem = $"Código para criar nova senha <b>{valor}</b>.";
+            return mensagem;
+        }
+
+        public async Task<ResponseDto<UsuarioDto>> ResetarSenhaAsync(ResetarSenhaDto dados)
+        {
+            var retorno = new ResponseDto<UsuarioDto>();
+
+            if (string.IsNullOrWhiteSpace(dados.Email))
+            {
+                retorno.Sucesso = false;
+                retorno.MensagensDeErros.Add("Obrigatório informar e-mail");
+                return retorno;
+            }
+
+            if (string.IsNullOrWhiteSpace(dados.SenhaNova))
+            {
+                retorno.Sucesso = false;
+                retorno.MensagensDeErros.Add("Senha é obrigatória");
+                return retorno;
+            }
+
+            if (string.IsNullOrWhiteSpace(dados.ConfirmacaoSenha))
+            {
+                retorno.Sucesso = false;
+                retorno.MensagensDeErros.Add("Confirmação de senha é obrigatória.");
+                return retorno;
+            }
+
+            if (dados.SenhaNova != dados.ConfirmacaoSenha)
+            {
+                retorno.Sucesso = false;
+                retorno.MensagensDeErros.Add("as senhas são diferentes. A senha e a Confirmação de senha devem ser iguais.");
+                return retorno;
+            }
+
+            var usuario = await _usuarioRepository.RecuperarUsuariosPorCodigoAsync(dados.CodigoResetarSenha, dados.Email);
+            if (usuario is null)
+            {
+                retorno.Sucesso = false;
+                retorno.MensagensDeErros.Add($"Código de recuperar senha não existe para o e-mail {dados.Email}.");
+                return retorno;
+            }            
+
+            usuario.Senha = dados.SenhaNova;
+            retorno.Sucesso = await _usuarioRepository.AlterarAsync(usuario);
+            return retorno;
         }
     }
 }

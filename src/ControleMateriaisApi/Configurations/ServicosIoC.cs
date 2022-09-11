@@ -18,6 +18,7 @@ namespace ControleMateriaisApi.Configurations
             services.AddScoped<IMaterialService, MaterialService>();
             services.AddScoped<IPoloService, PoloService>();
             services.AddScoped<IOrdemServicoService, OrdemServicoService>();
+            services.AddScoped<IEnvioDeEmailService, EnvioDeEmailService>();
             return services;
         }
     }

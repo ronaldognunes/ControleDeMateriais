@@ -30,6 +30,13 @@ namespace ControleMateriaisApi.Repository
             return true;
         }
 
+        public async Task<bool> CadastrarVariosAsync(List<T> entity)
+        {
+            await _db.AddRangeAsync(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> DeletarAsync(T entity)
         {
             _db.Remove(entity);

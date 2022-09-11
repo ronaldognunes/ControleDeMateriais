@@ -32,9 +32,17 @@ namespace ControleMateriaisApi.Services
             return response;
         }
 
-        public async Task<ResponseDto<PoloDto>> CadastrarPololAsync(PoloDto polo)
+        public async Task<ResponseDto<PoloDto>> CadastrarPololAsync(CadastroPoloDto polo)
         {
             var response = new ResponseDto<PoloDto>();
+            var mensagensErros = polo.Validar();
+            if (mensagensErros.Any())
+            {
+                response.MensagensDeErros.AddRange(mensagensErros);
+                response.Sucesso = false;
+                return response;
+            }
+
             var poloEntity = _mapper.Map<Polo>(polo);
             response.Sucesso = await _repository.CadastrarAsync(poloEntity);
             return response;

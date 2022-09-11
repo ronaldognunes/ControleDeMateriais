@@ -1,11 +1,7 @@
-﻿using ControleMateriaisApi.Domain;
-
-namespace ControleMateriaisApi.Dto
+﻿namespace ControleMateriaisApi.Dto
 {
-    public class PoloDto
+    public class CadastroPoloDto
     {
-        public int? Id { get; set; }
-        public DateTime? DataCadastro { get; set; } 
         public string? NomePolo { get; set; }
         public string? Logradouro { get; set; }
         public int? Numero { get; set; }
@@ -17,16 +13,13 @@ namespace ControleMateriaisApi.Dto
         public IList<string> Validar()
         {
             var retorno = new List<string>();
-            if (Id == null)
-                retorno.Add("ID do polo é obrigatório");
-
             if (string.IsNullOrWhiteSpace(NomePolo))
                 retorno.Add("Nome do Polo é obrigatório");
 
             if (string.IsNullOrWhiteSpace(Logradouro))
                 retorno.Add("Logradouro é obrigatório");
 
-            if (Numero == null)
+            if (Numero == null )
                 retorno.Add("Número é obrigatório");
 
             if (string.IsNullOrWhiteSpace(Cep))
