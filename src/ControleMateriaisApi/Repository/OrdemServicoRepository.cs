@@ -4,7 +4,6 @@ using ControleMateriaisApi.Repository.Context;
 using ControleMateriaisApi.Repository.Interfaces;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 using System.Text;
 
 namespace ControleMateriaisApi.Repository
@@ -52,8 +51,6 @@ namespace ControleMateriaisApi.Repository
                 query.AppendLine(" and DATE(os.data_cadastro) <= DATE(@dataFim) ");
                 parametros.Add("dataFim", dataFim, System.Data.DbType.DateTime);
             }
-
-
 
             var resultado = await _context.Database.GetDbConnection().QueryAsync<RelatorioOs>(query.ToString(),parametros);            
 

@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleMateriaisApi.Migrations
 {
     [DbContext(typeof(AplicationContext))]
-    [Migration("20220911213609_novamigracao")]
+    [Migration("20221112165633_nova-migracao")]
     partial class novamigracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ControleMateriaisApi.Domain.ItemOrdemServico", b =>
