@@ -76,9 +76,15 @@ builder.Services.AddSwaggerGen(x =>
     });
 });
 
+/*cors*/
+var myPoliceCors = "_myPoliceCors";
+builder.Services.AddCors( opt =>
+{
+    opt.AddPolicy(myPoliceCors , x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()) ;
+});
 
 var app = builder.Build();
-
+app.UseCors(myPoliceCors);
 app.UseSwagger();
 app.UseSwaggerUI();
 
