@@ -1,0 +1,5 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/25a5fcfe-c2f9-4443-ab4e-9bafadeb5b5f/microsoft.web/sites/subscriptions/25a5fcfe-c2f9-4443-ab4e-9bafadeb5b5f/resourceGroups/ControleDeMateriais_group/providers/Microsoft.Web/sites/controleMaterialapi",
+    "appService.deploySubpath": ".",
+    "dotnet.defaultSolution": "ControleDeMateriais.sln"
+}

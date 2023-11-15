@@ -1,0 +1,74 @@
+﻿@page "/redefinir-senha"
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@layout LoginLayout
+@inject NavigationManager navegacao
+@inject IUsuarioService service
+@inject IRecursos recursos
+
+<PageTitle>Redefinir Senha</PageTitle>
+<div class="login">
+    <div class="login-form">
+        <h4>Redefinir Senha</h4>
+        <EditForm Model="@resetarSenha" OnValidSubmit="@RedefinirSenhaAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row align-content-between mb-3">
+                <InputNumber type="codigo" class="form-control" @bind-Value="resetarSenha.CodigoResetarSenha" placeholder="Digite o código"></InputNumber>
+            </div>
+            <div class="row align-content-between mb-3">
+                <InputText type="email" class="form-control" @bind-Value="resetarSenha.Email" placeholder="Digite o email"></InputText>
+            </div>
+            <div class="row align-content-between mb-3">
+                <InputText type="password" placeholder="Digite a senha" class="form-control" @bind-Value="resetarSenha.SenhaNova"></InputText>
+            </div>
+            <div class="row align-content-between mb-3">
+                <InputText type="password" placeholder="Digite a senha" class="form-control" @bind-Value="resetarSenha.ConfirmacaoSenha"></InputText>
+            </div>
+            <div class="row align-content-between mb-1">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+            <div class="row align-content-between mb-1">
+                <button class="btn btn-outline-success" @onclick="Voltar">Voltar</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+@code
+{
+    ResetarSenhaDto resetarSenha = new();
+    
+
+    private void Voltar()
+    {
+        navegacao.NavigateTo("/login");
+    }
+
+    private async Task RedefinirSenhaAsync()
+    {
+        var retorno = await service.ResetarSenhaAsync(resetarSenha);
+        if(retorno.Sucesso)
+        {
+            recursos.AlertaSucesso("Enviado e-mail para redefinição de senha.");
+            navegacao.NavigateTo("/login");
+        }   
+        else
+        {
+            recursos.AlertaErro("Não foi possivel enviar e-mail.");
+            LimparDados();
+        }
+
+    }
+
+    void LimparDados()
+    {
+        resetarSenha.CodigoResetarSenha = 0;
+        resetarSenha.SenhaNova = "";
+        resetarSenha.ConfirmacaoSenha = "";
+        resetarSenha.Email = "";
+
+    }
+
+
+
+}

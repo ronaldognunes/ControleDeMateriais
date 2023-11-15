@@ -1,0 +1,58 @@
+﻿@page "/login"
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@layout LoginLayout
+@inject NavigationManager navigator
+@inject IUsuarioService usuarioService
+@inject IRecursos recursos
+
+
+<PageTitle>Login</PageTitle>
+<div class="login">
+    <div class="login-form">
+        <h4>Efetuar Login</h4>
+        <EditForm Model="@usuarioLogin" OnValidSubmit="@EfetuarLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row align-content-between mb-3">
+                <InputText type="email" class="form-control" @bind-Value="usuarioLogin.Email" placeholder="Digite o email"></InputText>
+            </div>
+            <div class="row align-content-between mb-3">
+                <InputText type="password" placeholder="senha" class="form-control" @bind-Value="usuarioLogin.Senha"></InputText>
+            </div>
+            <div class="row align-content-between mb-1">
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+            <div class="row align-content-between mb-1">
+                <button class="btn btn-outline-success" @onclick="TelaLembrar">Lembrar Senha</button>
+            </div>
+            <div class="row align-content-between mb-1">
+                <button class="btn btn-outline-secondary" @onclick="TelaRedefinir">Redefinir senha</button>
+            </div>
+            
+        </EditForm>
+    </div>
+</div>
+
+@code
+{
+    UsuarioLogin usuarioLogin = new();
+    async Task EfetuarLogin()
+    {
+        var retorno = await usuarioService.EfetuarLoginAsync(usuarioLogin);
+        if (retorno.Sucesso)
+            navigator.NavigateTo("/");
+        else
+            recursos.AlertaErro("Não foi possivel Efetuar o Login");
+    }
+
+    private void TelaLembrar()
+    {
+        navigator.NavigateTo("/enviar-email");
+    }
+
+    private void TelaRedefinir()
+    {
+        navigator.NavigateTo("/redefinir-senha");
+    }
+}

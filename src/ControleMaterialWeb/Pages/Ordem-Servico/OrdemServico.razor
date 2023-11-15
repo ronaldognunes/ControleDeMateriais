@@ -1,0 +1,269 @@
+@page "/ordem-servico"
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IMaterialService _serviceMaterial
+@inject IPoloService servicePolo
+@inject IOrdemServicoService serviceOrdem
+@inject IRecursos recursos
+@inject IUsuarioLocalStorage UsuarioLocalStorage
+@inject DialogService DialogService
+
+<PageTitle>Oderm de Serviço</PageTitle>
+
+
+<fieldset>
+    <legend>Cadastro de Ordem de Serviço</legend>
+    <div class="card">
+        <div class="card-header">
+            Dados Basicos Ordem de Serviço
+        </div>
+        <div class="card-body">
+            <EditForm Model="@ordemServico" OnValidSubmit="@CadastrarOSAsync">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="Logradouro" class="form-label">Logradouro</label>
+                        <InputText class="form-control" @bind-Value="ordemServico.Logradouro"></InputText>
+                        <ValidationMessage For="()=> ordemServico.Logradouro" />
+                    </div>
+                    <div class="mb-3 col-md-1">
+                        <label for="Numero" class="form-label">Número</label>
+                        <InputNumber class="form-control" @bind-Value="ordemServico.Numero"></InputNumber>
+                        <ValidationMessage For="()=> ordemServico.Numero" />
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="Bairro" class="form-label">Bairro</label>
+                        <InputText class="form-control" @bind-Value="ordemServico.Bairro"></InputText>
+                        <ValidationMessage For="()=> ordemServico.Bairro" />
+                    </div>
+                    <div class="mb-3 col-md-3">
+                        <label for="Cidade" class="form-label">Cidade</label>
+                        <InputText class="form-control" @bind-Value="ordemServico.Cidade"></InputText>
+                        <ValidationMessage For="()=> ordemServico.Cidade" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-1">
+                        <label for="Cep" class="form-label">Cep</label>
+                        <InputText class="form-control" @bind-Value="ordemServico.Cep"></InputText>
+                        <ValidationMessage For="()=> ordemServico.Cep" />
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="complemento" class="form-label">Complemento</label>
+                        <InputText class="form-control" @bind-Value="ordemServico.Complemento"></InputText>
+                        <ValidationMessage For="()=> ordemServico.Complemento" />
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="tipo-ordem" class="form-label">Tipo Ordem Seviço</label>
+                        <InputSelect @bind-Value="ordemServico.TipoOrdemDeServico" class="form-select">
+                            <option></option>
+                            <option value="@TipoOrdemServico.Entrada">Entrada</option>
+                            <option value="@TipoOrdemServico.Saida">Saida</option>
+                        </InputSelect>
+                        <ValidationMessage For="()=> ordemServico.TipoOrdemDeServico" />
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="Polo" class="form-label">Polo</label>
+                        <InputSelect @bind-Value="ordemServico.IdPolo" class="form-select">
+                            <option></option>
+                            @foreach (var polo in polos)
+                            {
+                                <option TValue="int32" value="@polo.Id">@polo.NomePolo</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="()=> ordemServico.IdPolo" />
+                    </div>
+                    <div class="card-header">
+                        Materiais da Ordem de Servico
+                    </div>
+                    <div class="card-body">
+                        <div class="container-sm">
+                            <div class="row">
+
+                                <div class="col-1">
+                                    <input type="text" class="form-control" value="@codigo" @onchange="ConsultarMaterial" placeholder="Código" name="codigo">
+                                </div>
+                                <div class="col-1">
+                                    <button type="button" class="btn" @onclick="(()=>AbrirModal())"><RadzenIcon Icon="find_in_page" /></button>
+                                </div>
+                                <div class="col-3">
+                                    <input type="text" class="form-control" @bind="nomeMaterial" readonly="true" name="nome_material">
+                                </div>
+                                <div class="col-1">
+                                    <input type="text" class="form-control" @bind="qtd" placeholder="UN" name="qtd">
+                                </div>
+
+                                <div class="col">
+                                    <button type="button" class="btn btn-primary" @onclick="(()=>AdicionarMaterial())">Adicionar material</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-sm">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Código do material</th>
+                                        <th>Descrição</th>
+                                        <th>Unidade de Medida</th>
+                                        <th>Excluir</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in itens)
+                                    {
+                                        <tr>
+                                            <td>@item.IdMaterial</td>
+                                            <td>@item.Descricao</td>
+                                            <td>@item.Quantidade</td>
+                                            <td>
+                                                <button class="btn btn-outline-danger" @onclick="(()=>ExcluirItem(item))">Excluir</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <div class="row-g3">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" class="btn btn-success" @onclick="LimparCampos">limpar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</fieldset>
+
+
+@code {
+    private CadastroOrdemServicoDto ordemServico = new();
+    private List<CadastroItemOrdemServicoDto> itens = new List<CadastroItemOrdemServicoDto>();
+    private string codigo = "";
+    private string nomeMaterial = string.Empty;
+    private string qtd = "";
+    private List<PoloDto> polos = new List<PoloDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarPolosAsync();
+    }
+
+    private async Task CadastrarOSAsync()
+    {
+        var usuario = await UsuarioLocalStorage.RecuperarDadosUsuario();
+        ordemServico.IdUsuario = usuario.Id;
+        foreach (var item in itens)
+        {
+            var itemEnvio = new ItemOrdenServicoDto()
+                {
+                    Quantidade = item.Quantidade,
+                    IdMaterial = item.IdMaterial
+                };
+            ordemServico.Itens.Add(itemEnvio);
+        }
+        var retorno = await serviceOrdem.InserirNovaOrdemServicoAsync(ordemServico);
+
+        if (retorno.Sucesso)
+        {
+            recursos.AlertaSucesso();
+            LimparCampos();
+            return;
+        }
+        else
+            foreach (var mensagem in retorno.MensagensDeErros) recursos.AlertaErro(mensagem);
+
+        recursos.AlertaErro();
+
+    }
+
+    private void LimparCampos()
+    {
+        ordemServico.Bairro = "";
+        ordemServico.Logradouro = "";
+        ordemServico.Numero = null;
+        ordemServico.Cep = "";
+        ordemServico.Complemento = "";
+        ordemServico.Cidade = "";
+        itens.Clear();
+    }
+
+    private void AdicionarMaterial()
+    {
+        if (!string.IsNullOrWhiteSpace(nomeMaterial) && !string.IsNullOrWhiteSpace(qtd) && !string.IsNullOrWhiteSpace(codigo))
+        {
+            itens.Add(new CadastroItemOrdemServicoDto() { IdMaterial = Convert.ToInt32(codigo), Quantidade = Convert.ToInt32(qtd), Descricao = nomeMaterial });
+            LimparDadoConsultaMaterial();
+        }
+        else
+            recursos.AlertaErro("Obrigatório informar Nome do material, código e quantidade.");
+
+
+    }
+
+    private async Task ConsultarMaterial(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int id))
+        {
+            var dados = await _serviceMaterial.RecuperarMaterialAsync(id);
+            if (dados.Sucesso)
+            {
+                nomeMaterial = dados.Result.Nome;
+                codigo = dados.Result.Id.ToString();
+            }
+        }
+    }
+
+    public async Task SelecionarMat(int id)
+    {
+        var dados = await _serviceMaterial.RecuperarMaterialAsync(id);
+        if (dados.Sucesso)
+        {
+            nomeMaterial = dados.Result.Nome;
+            codigo = dados.Result.Id.ToString();
+        }
+        DialogService.Close();
+    }
+
+    private void LimparDadoConsultaMaterial()
+    {
+        codigo = "";
+        nomeMaterial = "";
+        qtd = "";
+    }
+
+    private void ExcluirItem(CadastroItemOrdemServicoDto item)
+    {
+        itens.Remove(item);
+    }
+
+    private async Task CarregarPolosAsync()
+    {
+        var dados = await servicePolo.RecuperarTodosMateriaisAsync("", 1000, 1);
+        if (dados.Sucesso)
+            polos = dados.Result?.ToList();
+
+    }
+
+
+    public void AbrirModal()
+    {
+        DialogOptions options = new();
+        options.AutoFocusFirstElement = true;
+        options.Draggable = true;
+        options.CloseDialogOnEsc = true;
+
+        DialogService.Open("Pesquisar Material", ds =>@<ModalMaterial Selecionar="SelecionarMat"></ModalMaterial>, options);
+    }
+
+}

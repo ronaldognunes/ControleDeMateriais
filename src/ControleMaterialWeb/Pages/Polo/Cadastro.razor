@@ -1,0 +1,91 @@
+﻿@page "/cadastro-polo"
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IPoloService _servicePolo;
+@inject IRecursos recursos
+
+
+<form>
+    <fieldset>
+        <legend>Cadastro de Polo</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Dados polo
+            </div>
+            <div class="card-body">
+                <EditForm Model="Polo" OnValidSubmit="CadastrarPoloAsync">
+                    <DataAnnotationsValidator />
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-polo" class="form-label">Nome do Polo</label>
+                        <InputText class="form-control" @bind-Value="Polo.NomePolo"></InputText>
+                        <ValidationMessage For="()=> Polo.NomePolo"></ValidationMessage>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-polo" class="form-label">Logradouro</label>
+                        <InputText class="form-control" @bind-Value="Polo.Logradouro"></InputText>
+                        <ValidationMessage For="()=> Polo.Logradouro"></ValidationMessage>
+                    </div>
+                    <div class="mb-3 col-md-1">
+                        <label for="numero" class="form-label">Número</label>
+                        <InputNumber class="form-control" @bind-Value="Polo.Numero"></InputNumber>
+                        <ValidationMessage For="()=> Polo.Numero"></ValidationMessage>
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="bairro" class="form-label">Bairro</label>
+                        <InputText class="form-control" @bind-Value="Polo.Bairro"></InputText>
+                        <ValidationMessage For="()=> Polo.Bairro"></ValidationMessage>
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="cep" class="form-label">CEP</label>
+                        <InputText class="form-control" @bind-Value="Polo.Cep"></InputText>
+                        <ValidationMessage For="()=> Polo.Cep"></ValidationMessage>
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="cidade" class="form-label">Cidade</label>
+                        <InputText class="form-control" @bind-Value="Polo.Cidade"></InputText>
+                        <ValidationMessage For="()=> Polo.Cidade"></ValidationMessage>
+                    </div>
+                    <div class="mb-3 col-md-1">
+                        <label for="uf" class="form-label">UF</label>
+                        <InputText class="form-control" @bind-Value="Polo.Uf"></InputText>
+                        <ValidationMessage For="()=> Polo.Uf"></ValidationMessage>
+                    </div>
+                    <div class="row-g4 col-md-2">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        <button type="button" class="btn btn-success" @onclick="LimparCampos">limpar</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+@code {
+    CadastroPoloDto Polo = new();
+
+    private async Task CadastrarPoloAsync()
+    {
+        var retorno = await _servicePolo.InserirNovoPoloAsync(Polo);
+        if (retorno.Sucesso)
+        {
+            LimparCampos();
+            recursos.AlertaSucesso();
+        }
+        else
+        {
+            recursos.AlertaErro();
+        }
+
+
+    }
+    private void LimparCampos()
+    {
+        Polo.Bairro = string.Empty;
+        Polo.NomePolo = string.Empty;
+        Polo.Logradouro = string.Empty;
+        Polo.Cep = string.Empty;
+        Polo.Cidade = string.Empty;
+        Polo.Uf = string.Empty;
+    }
+}

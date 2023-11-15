@@ -1,0 +1,79 @@
+﻿@page "/alterar-usuario/{Id:int}"
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject NavigationManager navegacao
+@inject IUsuarioService usuarioService
+@inject IRecursos recursos
+
+<PageTitle>Editar Usuario</PageTitle>
+
+<form>
+    <fieldset>
+        <legend>Editar Usuario</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Dados polo
+            </div>
+            <div class="card-body">
+                <EditForm Model="usuario" OnValidSubmit="EditarUsuarioAsync">
+                    <DataAnnotationsValidator />
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-usuario" class="form-label">Nome </label>
+                        <InputText class="form-control" @bind-Value="usuario.Nome"></InputText>
+                        <ValidationMessage For="(()=>usuario.Nome)"></ValidationMessage>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-polo" class="form-label">Email</label>
+                        <InputText class="form-control" @bind-Value="usuario.Email"></InputText>
+                        <ValidationMessage For="(()=>usuario.Email)"></ValidationMessage>
+                    </div>
+                    <div class="mb-2 col-md-2">
+                        <label for="perfil" class="form-label">Perfil</label>
+                        <InputSelect @bind-Value="usuario.Perfil" class="form-select">
+                            <option value=""></option>
+                            <option value="@TipoUsuario.Gerente">Gerente</option>
+                            <option value="@TipoUsuario.Colaborador">Colaborador</option>
+                            <option value="@TipoUsuario.Administrador">Adminstrador</option>
+                        </InputSelect>
+                        <ValidationMessage For="()=> usuario.Perfil" />
+                    </div>                    
+                   
+                    <div class="row-g4 col-md-2">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-success" @onclick="Voltar">Voltar</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+
+@code 
+{
+    [Parameter]
+    public int Id { get; set; }
+
+    private UsuarioDto usuario = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        usuario = (await usuarioService.RecuperarUsuarioAsync(Id)).Result;
+    }
+
+    private async Task EditarUsuarioAsync()
+    {
+        var retorno = await usuarioService.AlterarUsuarioAsync(Id, usuario);
+        if (retorno.Sucesso)
+            recursos.AlertaSucesso("Usuario Alterado com sucesso.");
+        else
+            recursos.AlertaErro("Erro ao alterar usuário.");
+    }
+
+    private void Voltar()
+    {
+        navegacao.NavigateTo("exibir-usuarios");
+    }
+
+}

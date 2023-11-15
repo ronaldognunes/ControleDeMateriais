@@ -1,0 +1,142 @@
+﻿@page "/consulta-ordem-servico"
+@using ControleMaterialWeb.Models;
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IOrdemServicoService servico;
+@inject IRecursos recursos
+@inject NavigationManager navigations;
+
+<PageTitle>Consulta de Materiais</PageTitle>
+
+
+<form>
+    <fieldset>
+        <legend>Consulta de Ordem de Serviço</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Filtro por Número da Os
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <input type="number" class="form-control" @bind-value="NumeroOs" placeholder="nº OS" name="numero_os">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" @onclick="Buscar">Consultar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Ordens de Serviços
+            </div>
+            <div class="card-body">
+                @if (OrdensServicos?.Count() > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Número ordem Serviço</th>
+                                <th>Logradouro</th>
+                                <th>Data Cadastro</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var os in OrdensServicos)
+                            {
+                                <tr>
+                                    <td>@os.Id</td>
+                                    <td>@os.Logradouro</td>
+                                    <td>@os.DataCadastro?.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary" @onclick="(()=>Alterar(os.Id))">Alterar</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" @onclick="(()=>Excluir(os.Id))">Excluir</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <Paginacao QuantidadeTotalPaginas="@TotalDePaginas" paginaAtual="@paginaAtual"
+                           Raio="2" PaginaSelecionada="@PaginaSelecionada">
+                    </Paginacao>
+                }
+                else if (OrdensServicos is null)
+                {
+                    <h4>Aguardando...</h4>
+                }
+                else
+                {
+                    <h4>Nenhum registro encontrado.</h4>
+                }
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+@code {
+    private int? NumeroOs = null;
+    private IList<OrdemServicoDto> OrdensServicos ;
+    private int TotalDePaginas;
+    private int TotalDeRegistros;
+    private int paginaAtual = 1;
+
+    private async Task Buscar()
+    {
+        paginaAtual = 1;
+        if (NumeroOs is not null )
+            await CarregarOS(paginaAtual, NumeroOs);
+        else
+            await CarregarOS(paginaAtual);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarOS();
+    }
+    private void Alterar(int? id)
+    {
+        if(id != null)
+        {
+            navigations.NavigateTo($"/alterar-ordem-servico/{id}");
+        }
+    }
+
+    private async Task Excluir(int? id)
+    {
+        if(id != null)
+        {
+            var retorno = await servico.ApagarOrdemServicoAsync(id??0);
+        }
+        await CarregarOS();
+    }
+
+    private async Task CarregarOS(int pagina = 1, 
+                                  int? numeroOs = null,
+                                  int quantidadePorPagina = 10)
+    {
+        var dadosResponse = new ResponseDto<IList<OrdemServicoDto>>();
+        dadosResponse = await servico.RecuperarTodasOsAsync(numeroOs,quantidadePorPagina, pagina);
+        OrdensServicos = dadosResponse?.Result;
+        TotalDePaginas = dadosResponse.TotalDePaginas;
+        TotalDeRegistros = dadosResponse.TotalDeRegistros;
+        numeroOs = null;
+    }
+
+    private async Task PaginaSelecionada(int pagina)
+    {
+        paginaAtual = pagina;
+        await CarregarOS(pagina);
+    }
+
+    
+    
+}

@@ -1,0 +1,88 @@
+@page "/relatorios"
+@using ControleMaterialWeb.Models.NovaPasta;
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IOrdemServicoService service; 
+@inject IJSRuntime jsRuntime;
+@inject IRecursos recursos
+
+<PageTitle>Relatórios</PageTitle>
+
+
+<form>
+    <fieldset>
+        <legend>Gerar Relatório</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Filtros do relatório
+            </div>
+            <div class="card-body">
+                <EditForm Model="relatorio" OnValidSubmit="GerarRelatorio">
+                    <DataAnnotationsValidator />
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-polo" class="form-label">Data Início</label>
+                        <InputDate class="form-control" @bind-Value="relatorio.DataInicio"></InputDate>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-polo" class="form-label">Data Fim</label>
+                        <InputDate class="form-control" @bind-Value="relatorio.DataFim"></InputDate>
+                    </div>
+                    <div class="mb-2 col-md-2">
+                        <label for="perfil" class="form-label">Tipo Ordem de Serviço</label>
+                        <InputSelect @bind-Value="relatorio.TipoOrdem" class="form-select">
+                            <option value=""></option>
+                            <option value="@TipoOrdemServico.Entrada">Entrada</option>
+                            <option value="@TipoOrdemServico.Saida">Saída</option>
+                        </InputSelect>
+                        <ValidationMessage For="()=> relatorio.TipoOrdem" />
+                    </div>
+                    <br />
+                    <br />
+                    <div class="row-g4 col-md-3">
+                        <button type="submit" class="btn btn-primary">Gerar relatório</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </fieldset>
+</form>
+@code
+{
+    private RelatorioDto relatorio = new();
+    IJSObjectReference module;
+
+    protected override async Task OnInitializedAsync()
+    {        
+        relatorio.DataInicio = DateTime.Now;
+        relatorio.DataFim = DateTime.Now.AddDays(30); 
+        module = await jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/app.js");
+    }    
+
+    private async Task GerarRelatorio()
+    {
+        var retorno = await service.GerarRelatorioAsync(relatorio.TipoOrdem,relatorio.DataInicio,relatorio.DataFim);
+        if (retorno.Sucesso)
+            await DownloadFileFromStream(retorno.Result.NomeArquivo, retorno.Result.Base64);
+        else
+            recursos.AlertaErro("Nenhum registro encontrado com os filtros informados.");
+
+    }
+
+    private Stream GetFileStream(string arquivo)
+    {
+        var randomBinaryData = Convert.FromBase64String(arquivo);
+        var fileStream = new MemoryStream(randomBinaryData);
+
+        return fileStream;
+    }
+
+    private async Task DownloadFileFromStream(string nome, string arquivo)
+    {
+        var fileStream = GetFileStream(arquivo);
+        var fileName = nome;
+        using var streamRef = new DotNetStreamReference(stream: fileStream);        
+        await module.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);        
+    }
+
+}

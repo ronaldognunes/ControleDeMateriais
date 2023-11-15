@@ -1,0 +1,120 @@
+﻿@using ControleMaterialWeb.Models;
+@using ControleMaterialWeb.Services;
+@inject IMaterialService serviceMaterial;
+@inject NavigationManager navigation;
+
+
+<form>
+    <fieldset>        
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Filtro por Nome do material
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control" @bind-value="NomeMaterial" placeholder="digite nome do material para consulta" name="nome_material">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" @onclick="Buscar">Consultar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Materiais cadastrados
+            </div>
+            <div class="card-body">
+                @if (materiais?.Count() > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nome Material</th>
+                                <th>Unidade de médida</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var material in materiais)
+                            {
+                                <tr>
+                                    <td><a class="alert-link" @onclick="()=> SelecionarMaterial(material.Id)">@material.Nome</a></td>
+                                    <td>@material.UnidadeMedida</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <Paginacao QuantidadeTotalPaginas="@TotalDePaginas" paginaAtual="@paginaAtual"
+                           Raio="2" PaginaSelecionada="@PaginaSelecionada">
+                    </Paginacao>
+                }
+                else if (materiais is null)
+                {
+                    <h4>Aguardando...</h4>
+                }
+                else
+                {
+                    <h4>Nenhum registro encontrado.</h4>
+                }
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+
+
+@code
+{
+    private IEnumerable<MaterialModel> materiais;
+    private int TotalDePaginas;
+    private int TotalDeRegistros;
+    private int paginaAtual = 1;
+    private string NomeMaterial = "";
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<int> Selecionar { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarMateriais();
+    }     
+
+    private async Task CarregarMateriais(int pagina = 1, string nome = "", int quantidadePorPagina = 10)
+    {
+        var dadosResponse = new ResponseDto<IList<MaterialModel>>();
+        if (string.IsNullOrWhiteSpace(nome))
+            dadosResponse = await serviceMaterial.RecuperarTodosMateriaisAsync("", quantidadePorPagina, pagina);
+        else
+            dadosResponse = await serviceMaterial.RecuperarTodosMateriaisAsync(nome, quantidadePorPagina, pagina);
+        materiais = dadosResponse?.Result;
+        TotalDePaginas = dadosResponse.TotalDePaginas;
+        TotalDeRegistros = dadosResponse.TotalDeRegistros;
+    }
+
+    private async Task PaginaSelecionada(int pagina)
+    {
+        paginaAtual = pagina;
+        await CarregarMateriais(pagina);
+    }
+
+    private async Task Buscar()
+    {
+        paginaAtual = 1;
+        if (!string.IsNullOrEmpty(NomeMaterial))
+            await CarregarMateriais(paginaAtual, NomeMaterial);
+        else
+            await CarregarMateriais(paginaAtual);
+    }
+
+    private async Task SelecionarMaterial (int id)
+    {
+        await Selecionar.InvokeAsync(id);
+    }
+
+
+}

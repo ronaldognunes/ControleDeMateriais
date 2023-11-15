@@ -1,0 +1,54 @@
+﻿@page "/enviar-email"
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@layout LoginLayout
+@inject IRecursos recursos
+@inject IUsuarioService service
+@inject NavigationManager navegacao
+
+<PageTitle>Recuperar Senha</PageTitle>
+<div class="login">
+    <div class="login-form">
+        <h4>Recuperar Senha</h4>
+        <EditForm Model="@Email" OnValidSubmit="@EnviarEmailLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row align-content-between mb-3">
+                <InputText type="email" class="form-control" @bind-Value="Email" placeholder="Digite o email"></InputText>
+            </div>
+            <div class="row align-content-between mb-1">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
+            <div class="row align-content-between mb-1">
+                <button class="btn btn-outline-success" @onclick="Voltar">Voltar</button>
+            </div>
+
+        </EditForm>
+    </div>
+</div>
+
+
+@code
+{
+    string Email = "";
+
+    async Task EnviarEmailLogin()
+    {
+        var retorno = await service.LembrarSenha(Email);
+        if (retorno.Sucesso)
+        {
+            recursos.AlertaSucesso("Enviado e-mail para redefinição de senha.");
+            navegacao.NavigateTo("/login");
+        }
+        else
+        {
+            recursos.AlertaErro("Não foi possivel enviar e-mail.");
+            Email = "";
+        }
+    }
+
+    private void Voltar()
+    {
+        navegacao.NavigateTo("/login");
+    }
+}

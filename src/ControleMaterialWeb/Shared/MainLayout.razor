@@ -1,0 +1,80 @@
+﻿@using ControleMaterialWeb.Autenticacao;
+
+@inherits LayoutComponentBase
+@inject TokenAutehtication auth
+@inject NavigationManager navegacao
+@inject NotificationService NotificationService;
+@attribute [Authorize]
+
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+    <RadzenDialog />
+    <RadzenNotification />
+    <RadzenContextMenu />
+    <RadzenTooltip />
+    <main>
+        <div class="top-row px-4">
+            <button class="btn btn-link"  @onclick="Logout" target="_blank">Sair</button>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code{
+    [CascadingParameter]
+    Task<AuthenticationState> authenticationState { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!(await authenticationState).User.Identity.IsAuthenticated)
+            navegacao.NavigateTo("/login");
+
+    }
+
+
+    private async Task Logout()
+    {
+        await auth.Logout();
+        navegacao.NavigateTo("/login");
+    }
+
+    public void AlertaDeErros(string descricao)
+    {
+        var mensagem = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Operação não realizada",
+                Detail = descricao,
+                CloseOnClick = true,
+                Payload = DateTime.Now
+            };
+
+        NotificationService.Notify(mensagem);
+    }
+
+    public void AlertaDeErros(List<string> descricoes)
+    {
+        foreach (var descricao in descricoes)
+            AlertaDeErros(descricao);        
+    }
+
+    public void AlertaDeSucesso(string descricao)
+    {
+        var mensagem = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Operação Realizada :)",
+                Detail = descricao,
+                CloseOnClick = true,
+                Payload = DateTime.Now
+            };
+
+        NotificationService.Notify(mensagem);
+    }
+}

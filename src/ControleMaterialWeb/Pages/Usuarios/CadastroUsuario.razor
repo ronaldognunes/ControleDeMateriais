@@ -1,0 +1,84 @@
+@page "/cadastro-usuario"
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IUsuarioService _serviceUsuario;
+@inject IRecursos recursos
+
+<PageTitle>Cadastros de Usuários</PageTitle>
+<fieldset>
+    <legend>Cadastro de Usuário</legend>
+    <br />
+    <div class="card">
+        <div class="card-header">
+            Dados do Usuario
+        </div>
+        <div class="card-body">
+            <EditForm Model="@usuario" OnValidSubmit="@CadastrarUsuarioAsync">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <div class="mb-2 col-md-6">
+                    <label for="nome-usuario" class="form-label">Nome usuário</label>
+                    <InputText class="form-control" @bind-Value="usuario.Nome"></InputText>
+                    <ValidationMessage For="()=> usuario.Nome" />
+                </div>
+                <div class="mb-2 col-md-4">
+                    <label for="email" class="form-label">Email</label>
+                    <InputText class="form-control" @bind-Value="usuario.Email"></InputText>
+                    <ValidationMessage For="()=> usuario.Email" />
+                </div>
+                <div class="mb-2 col-md-4">
+                    <label for="senha" class="form-label">Senha</label>
+                    <InputText type="password" class="form-control" @bind-Value="usuario.Senha"></InputText>
+                    <ValidationMessage For="()=> usuario.Senha" />
+                </div>
+                <div class="mb-2 col-md-4">
+                    <label for="ConfirmacaoSenha" class="form-label">Confirmar a senha </label>
+                    <InputText type="password" class="form-control" @bind-Value="usuario.ConfirmacaoSenha"></InputText>
+                    <ValidationMessage For="()=> usuario.ConfirmacaoSenha" />
+                </div>
+                <div class="mb-2 col-md-2">
+                    <label for="perfil" class="form-label">Perfil</label>
+                    <InputSelect @bind-Value="usuario.Perfil" class="form-select">
+                        <option value=""></option>
+                        <option value="@TipoUsuario.Gerente">Gerente</option>
+                        <option value="@TipoUsuario.Colaborador">Colaborador</option>
+                        <option value="@TipoUsuario.Administrador">Adminstrador</option>
+                    </InputSelect>
+                    <ValidationMessage For="()=> usuario.Perfil" />
+                </div>
+                <div class="row-g3 col-md-2">
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    <button type="button" class="btn btn-success" @onclick="LimparCampos">limpar</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</fieldset>
+
+@code
+{
+    private CadastroUsuarioDto usuario = new();
+    private IEnumerable<string> tipoUsuarios = new List<string>() { "Administrador", "Colaborador", "Gerente" };
+
+    private async Task CadastrarUsuarioAsync()
+    {
+        var retorno = await _serviceUsuario.InserirNovoUsuarioAsync(usuario);
+        if (retorno.Sucesso)
+        {
+            recursos.AlertaSucesso("Usuário cadastrado.");
+            LimparCampos();
+        }
+        else
+        {
+            recursos.AlertaErro("Erro ao cadastrar usuário.");
+        }
+    }
+
+    private void LimparCampos()
+    {
+        usuario.Nome = string.Empty;
+        usuario.Email = string.Empty;
+        usuario.Perfil = null;
+        usuario.Senha = string.Empty;
+        usuario.ConfirmacaoSenha = string.Empty;
+    }
+}

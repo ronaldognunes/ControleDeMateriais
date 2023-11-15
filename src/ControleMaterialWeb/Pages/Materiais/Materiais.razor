@@ -1,0 +1,75 @@
+@page "/materiais"
+@using ControleMaterialWeb.Models.Material;
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IMaterialService serviceMaterial;
+@inject IRecursos recursos
+
+
+
+<PageTitle>Materiais</PageTitle>
+<form>
+    <fieldset>
+        <legend>Cadastro de Materiais</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Dados do Material
+            </div>
+            <div class="card-body">
+                <EditForm Model="@material" OnValidSubmit="@CadastrarMaterialAsync">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-material" class="form-label">Nome do Material</label>
+                        <InputText class="form-control" @bind-Value="material.Nome"></InputText>
+                        <ValidationMessage For="()=> material.Nome" />
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="nome-material col-md-2" class="form-label">Unidade de Medida</label>
+                        <InputText class="form-control" @bind-Value="material.UnidadeMedida"></InputText>
+                        <ValidationMessage For="()=> material.UnidadeMedida" />
+                    </div>
+                    <div class="row-g4 col-md-2">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        <button type="button" class="btn btn-success" @onclick="LimparCampos">limpar</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+
+@code
+{
+    private CadastroMaterialDto material = new();
+    private List<string> Mensagens = new();
+
+    private async Task CadastrarMaterialAsync()
+    {
+        try
+        {
+            var retorno = await serviceMaterial.InserirNovoMaterialAsync(material);
+            if (retorno.Sucesso)
+            {
+                recursos.AlertaSucesso();
+                LimparCampos();
+            }
+            else
+                recursos.AlertaErro();
+
+        }
+        catch
+        {
+            LimparCampos();
+            recursos.AlertaErro();
+        }
+
+    }
+
+    private void LimparCampos()
+    {
+        material.Nome = string.Empty;
+        material.UnidadeMedida = string.Empty;
+    }    
+}

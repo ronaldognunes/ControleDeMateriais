@@ -1,0 +1,72 @@
+﻿@page "/editar-material/{Id:int}";
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IMaterialService servico;
+@inject IRecursos recursos
+@inject NavigationManager navigations;
+
+<form>
+    <fieldset>
+        <legend>EditarMaterial</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Dados do Material
+            </div>
+            <div class="card-body">
+                <EditForm Model="@material" OnValidSubmit="@EditarMaterialAsync">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                    <div class="mb-3 col-md-1">
+                        <label for="Codigo" class="form-label">Código</label>
+                        @material.Id
+                        <ValidationMessage For="(()=> material.Id)" />
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="nome-material" class="form-label">Nome do Material</label>
+                        <InputText class="form-control" @bind-Value="material.Nome"></InputText>
+                        <ValidationMessage For="(()=> material.Nome)" />
+                    </div>
+                    <div class="mb-3 col-md-2">
+                        <label for="nome-material col-md-2" class="form-label">Unidade de Medida</label>
+                        <InputText class="form-control" @bind-Value="material.UnidadeMedida"></InputText>
+                        <ValidationMessage For="(()=> material.UnidadeMedida)" />
+                    </div>
+                    <div class="row-g4 col-md-2">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private MaterialModel material = new();    
+
+    protected async override Task OnParametersSetAsync()
+    {
+        material = (await servico.RecuperarMaterialAsync(Id)).Result;
+    }
+
+    private async Task EditarMaterialAsync()
+    {
+
+        var retorno = await servico.AlterarMaterialAsync(Id, material);
+        if (retorno.Sucesso)
+        {
+            recursos.AlertaSucesso();
+            navigations.NavigateTo("/consulta-materiais");
+        }
+        else
+        {
+            recursos.AlertaErro();
+        }
+
+
+
+    }
+}

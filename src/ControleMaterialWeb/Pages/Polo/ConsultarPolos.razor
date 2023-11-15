@@ -1,0 +1,150 @@
+﻿@page "/consulta-polos"
+@using ControleMaterialWeb.Models;
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IPoloService _servicePolo;
+@inject NavigationManager _navegacao;
+@inject IRecursos recursos
+
+<PageTitle>Consulta polos</PageTitle>
+
+
+<form>
+    <fieldset>
+        <legend>Consulta de Polos</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Filtro por nome
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control" @bind="Nome" placeholder="digite nome do polo para consulta" name="nome_polo">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" @onclick="ConsultaPorNome">Consultar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Usuarios Cadastrados
+            </div>
+            <div class="card-body">
+                @if (polos?.Count() > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Logradouro</th>
+                                <th>Número</th>
+                                <th>Bairro</th>
+                                <th>DataCadastro</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var polo in polos)
+                            {
+                                <tr>
+                                    <td>@polo.NomePolo</td>
+                                    <td>@polo.Logradouro</td>
+                                    <td>@polo.Numero.ToString()</td>
+                                    <td>@polo.Bairro</td>
+                                    <td>@polo.DataCadastro?.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary" @onclick="(()=>AlterarPolo(polo.Id))">Alterar</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" @onclick="(()=>ExcluirPolo(polo.Id))">Excluir</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <Paginacao QuantidadeTotalPaginas="@TotalDePaginas" paginaAtual="@paginaAtual"
+                           Raio="2" PaginaSelecionada="@PaginaSelecionada">
+                    </Paginacao>
+                }
+                else if (polos is null)
+                {
+                    <h4>Aguardando ...</h4>
+                }
+                else
+                {
+                    <h4>Nenhum registro encontrado</h4>
+                }
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+
+@code
+{
+    private IEnumerable<PoloDto> polos;
+    private int TotalDePaginas;
+    private int TotalDeRegistros;
+    private int paginaAtual = 1;
+    private string Nome = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarPolos();
+    }
+
+    private void AlterarPolo(int id)
+    {
+        _navegacao.NavigateTo($"/editar-polo/{id}");
+    }
+
+    private async Task ExcluirPolo(int id)
+    {
+        var retorno = await _servicePolo.ApagarPoloAsync(id);
+        if (retorno.Sucesso)
+            recursos.AlertaSucesso("Polo Excluído.");
+        else
+            foreach (var mens in retorno.MensagensDeErros) recursos.AlertaErro(mens);    
+
+        await CarregarPolos();
+    }
+
+    private async Task CarregarPolos(int pagina = 1, string nome = "", int qtdPorPagina = 10)
+    {
+        var dados = new ResponseDto<IList<PoloDto>>();
+        if (string.IsNullOrWhiteSpace(Nome))
+            dados = await _servicePolo.RecuperarTodosMateriaisAsync("", qtdPorPagina, pagina);
+        else
+            dados = await _servicePolo.RecuperarTodosMateriaisAsync(nome, qtdPorPagina, pagina);
+        polos = dados.Result;
+        TotalDePaginas = dados.TotalDePaginas;
+        TotalDeRegistros = dados.TotalDeRegistros;
+    }
+
+    private async Task PaginaSelecionada(int pagina)
+    {
+        await CarregarPolos(pagina);
+    }
+
+    private async Task ConsultaPorNome()
+    {
+        if (!string.IsNullOrWhiteSpace(Nome))
+        {
+            paginaAtual = 1;
+            await CarregarPolos(paginaAtual, Nome);
+        }
+        else
+        {
+            await CarregarPolos();
+        }
+
+    }
+
+
+}

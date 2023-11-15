@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  controlematerialweb:
+    image: ${DOCKER_REGISTRY-}controlematerialweb
+    build:
+      context: ./src
+      dockerfile: ./ControleMaterialWeb/Dockerfile
+    
+    

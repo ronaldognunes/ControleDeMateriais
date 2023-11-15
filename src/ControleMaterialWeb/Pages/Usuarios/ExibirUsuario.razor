@@ -1,0 +1,144 @@
+@page "/exibir-usuarios"
+@using ControleMaterialWeb.Models;
+@using ControleMaterialWeb.Services;
+@using ControleMaterialWeb.Services.Interfaces;
+@inject IUsuarioService service;
+@inject NavigationManager navegacao
+@inject IRecursos recursos
+<PageTitle>Usuarios Cadastrados</PageTitle>
+
+
+<form>
+    <fieldset>
+        <legend>Consulta de Usuarios</legend>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Filtro por nome
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <input type="text" class="form-control" @bind-value="nomeUsuario" placeholder="digite nome do usuário para consulta" name="nome_material">
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" @onclick="Consultar">Consultar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="card">
+            <div class="card-header">
+                Usuarios Cadastrados
+            </div>
+            <div class="card-body">
+                @if (usuarios?.Count() > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Perfil</th>
+                                <th>DataCadastro</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var usuario in usuarios)
+                            {
+                                <tr>
+                                    <td>@usuario.Nome</td>
+                                    <td>@usuario.Email</td>
+                                    <td>@usuario.Perfil.ToString()</td>
+                                    <td>@usuario.DataCadastro?.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary" @onclick="(()=>AlterarUsuario(usuario.Id))">Alterar</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" @onclick="(()=>ExcluirUsuario(usuario.Id))">Excluir</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <Paginacao QuantidadeTotalPaginas="@TotalDePaginas" paginaAtual="@paginaAtual"
+                           Raio="2" PaginaSelecionada="@PaginaSelecionada">
+                    </Paginacao>
+                }
+                else if(usuarios is null)
+                {
+                    <h4>Aguardando..</h4>
+                }
+                else
+                {
+                    <h4>Nenhum registro encontrado.</h4>
+                }
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+
+@code
+{
+    private IEnumerable<UsuarioDto> usuarios;
+    private int TotalDePaginas;
+    private int paginaAtual = 1;
+    private int TotalDeRegistros;
+    private string nomeUsuario = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarUsuarios();
+    }
+
+    private async Task PaginaSelecionada(int pagina)
+    {
+        paginaAtual = pagina;
+        await CarregarUsuarios(pagina);
+    }
+
+    private async Task CarregarUsuarios(int pagina = 1,string nome="", int totalDePaginas = 10)
+    {
+        var dados = new ResponseDto<IList<UsuarioDto>>();
+        if (string.IsNullOrWhiteSpace(nome))
+            dados = await service.RecuperarTodosUsuariosAsync("",totalDePaginas,pagina);
+        else
+            dados = await service.RecuperarTodosUsuariosAsync(nome, totalDePaginas, pagina);
+
+        usuarios = dados?.Result;
+        TotalDePaginas = dados.TotalDePaginas;
+        TotalDeRegistros = dados.TotalDeRegistros;
+    }
+
+    private void AlterarUsuario(int id)
+    {
+        navegacao.NavigateTo($"/alterar-usuario/{id}");
+    }
+
+    private async Task ExcluirUsuario(int id)
+    {
+        var retorno = await service.ApagarUsuarioAsync(id);
+        if (retorno.Sucesso)
+            recursos.AlertaSucesso("Usuário Excluído com sucesso.");
+        else
+            foreach (var mens in retorno.MensagensDeErros) recursos.AlertaErro(mens);
+
+        await CarregarUsuarios();
+    }
+
+    private async Task Consultar()
+    {
+        paginaAtual = 1;
+        if (!string.IsNullOrWhiteSpace(nomeUsuario))
+            await CarregarUsuarios(paginaAtual, nomeUsuario);
+        else
+            await CarregarUsuarios(paginaAtual);
+            
+    }
+}
+

@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  controlemateriaisapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80;https://+:443
+    ports:
+      - "5001:80"
+      - "5003:443"  
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  
+
+  
